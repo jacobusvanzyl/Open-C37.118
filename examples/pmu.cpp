@@ -17,8 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h> 
+#ifdef _WIN32
+#include <Windows.h>
+#include <process.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <unistd.h>
+#endif
+
 #include <string.h>
 #include "c37118.h"
 #include "c37118configuration.h"
@@ -26,10 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "c37118data.h"
 #include "c37118header.h"
 #include "c37118command.h"
-#include <unistd.h>
 #include <iostream>
-#include <pthread.h>
-#include <unistd.h>
 
 // off the top of my head
 #define SET_BIT(val, bitIndex) val |= (1 << bitIndex)
@@ -94,7 +100,30 @@ struct threadarg{
 	bool send_data_flag;
 };
 
+#ifdef _WIN32
+#define SOCKET_READ(sockfd,buffer_rx,size) recv((sockfd), (char*)(buffer_rx), (size), 0)
+#define SOCKET_WRITE(sockfd,buffer_tx,size) send((sockfd), (const char*)(buffer_tx), (size), 0);
+#define SOCKET_CLOSE closesocket
+#define usleep(usec) Sleep((usec)/1000)
 
+struct DoprocessingThreadArgs {
+    int sock; CONFIG_1_Frame* myconf1;
+    CONFIG_Frame* myconf2;
+    DATA_Frame* my_data;
+    HEADER_Frame* my_header;
+};
+
+void doprocessingThread(void* args);
+
+#else
+#define SOCKET_READ(sockfd,buffer,size) write((sockfd),(buffer_tx),(size))
+#define SOCKET_WRITE(sockfd,buffer_tx,size) write((sockfd), (buffer_tx), (size))
+#define SOCKED_CLOSE close
+#endif
+
+#ifndef socklen_t
+#define socklen_t int
+#endif
 
 /**
 * Process Socket Packet C37.118-2011
@@ -204,17 +233,30 @@ int main( int argc, char *argv[] )
     
 	//std::cout << pmu.STN_get();
 
+#ifdef _WIN32
+    WSADATA wsaData;
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != 0) {
+        printf("WSAStartup failed with error: %d\n", iResult);
+        exit(1);
+    }
+#endif
     /* First call to socket() function */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    int on =1;
-     int status = setsockopt(sockfd, SOL_SOCKET,SO_REUSEADDR, (const char *) &on, sizeof(on));
-    if (sockfd < 0) 
+    if (sockfd < 0)
     {
         perror("ERROR opening socket");
         exit(1);
     }
+    int on =1;
+     int status = setsockopt(sockfd, SOL_SOCKET,SO_REUSEADDR, (const char *) &on, sizeof(on));
+    if (sockfd < 0) 
+    {       
+        perror("ERROR opening socket");
+        exit(1);
+    }
     /* Initialize socket structure */
-    bzero((char *) &serv_addr, sizeof(serv_addr));
+    memset((char *) &serv_addr, 0, sizeof(serv_addr));
     portno = TCP_PORT;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -246,6 +288,17 @@ int main( int argc, char *argv[] )
             exit(1);
         }
         
+#ifdef _WIN32
+        DoprocessingThreadArgs* pArgs = new DoprocessingThreadArgs();
+        pArgs->sock = newsockfd;
+        pArgs->myconf1 = my_config1;
+        pArgs->myconf2 = my_config2;
+        pArgs->my_data = my_dataframe;
+        pArgs->my_header = my_header;
+
+        _beginthread(doprocessingThread, 0, pArgs);
+        doprocessing(newsockfd, my_config1, my_config2, my_dataframe, my_header);
+#else
         /* Create child process */
         pid = fork();
         if (pid < 0)
@@ -256,16 +309,28 @@ int main( int argc, char *argv[] )
         if (pid == 0)  
         {
             /* This is the client process */
-            close(sockfd);
+            SOCKET_CLOSE(sockfd);
             doprocessing(newsockfd,my_config1,my_config2,my_dataframe,my_header);
             exit(0);
         }
         else
         {
-            close(newsockfd);
+            SOCKET_CLOSE(newsockfd);
         }
+#endif
     } /* end of while */
 }
+
+#ifdef _WIN32
+
+void doprocessingThread(void* args)
+{
+    DoprocessingThreadArgs* dpArgs = (DoprocessingThreadArgs*)args;
+    doprocessing(dpArgs->sock, dpArgs->myconf1, dpArgs->myconf2, dpArgs->my_data, dpArgs->my_header);
+}
+
+#endif
+
 /**
 * Process Socket Packet C37.118-2011
 */
@@ -276,8 +341,8 @@ void doprocessing (int sock, CONFIG_1_Frame *myconf1, CONFIG_Frame *myconf2, DAT
     CMD_Frame *cmd = new CMD_Frame();
    
     while (1){
-    bzero(buffer,SIZE_BUFFER);
-    n = read(sock,buffer,SIZE_BUFFER);
+    memset(buffer,0, SIZE_BUFFER);
+    n = SOCKET_READ(sock,buffer,SIZE_BUFFER);
     usleep(1E6);
   //  cout << "Valor N:" << n << endl;
     if (n < 0) { perror("ERROR reading from socket"); exit(1);}
@@ -302,14 +367,18 @@ void select_cmd_action(int sock,CMD_Frame *cmd,CONFIG_1_Frame *myconf1, CONFIG_F
 	unsigned char *buffer2;
 	bool send_data_flag = false;
 	CONFIG_Frame *aux = new CONFIG_Frame();
-    pthread_t threads;
     struct threadarg t_arg;
     
      t_arg.sock = sock;
      t_arg.my_data = my_data;
      t_arg.send_data_flag = false;
      long rc;
-    rc = pthread_create(&threads, NULL, tx_data, (void *) &t_arg );
+     
+#ifdef _WIN32
+#else
+     pthread_t threads;
+     rc = pthread_create(&threads, NULL, tx_data, (void *) &t_arg );
+#endif
     
 	//printf("Comando Recebido: %x\n",cmd->CMD_get());
   	switch (cmd->CMD_get()){
@@ -324,7 +393,7 @@ void select_cmd_action(int sock,CMD_Frame *cmd,CONFIG_1_Frame *myconf1, CONFIG_F
 
           case 0x03:  // Transmit Header Record Frame
            	  size = my_header->pack(&buffer);
-          	  n = write(sock,buffer,size); 
+          	  n = SOCKET_WRITE(sock,buffer,size);
           	  if (n < 0) {
           	  	  perror("ERROR writing to socket");
           	  	  exit(1);
@@ -333,7 +402,7 @@ void select_cmd_action(int sock,CMD_Frame *cmd,CONFIG_1_Frame *myconf1, CONFIG_F
 
           case 0x04:  // Transmit Configuration #1 Record Frame
            	  size = myconf1->pack(&buffer);
-          	  n = write(sock,buffer,size); 
+          	  n = SOCKET_WRITE(sock,buffer,size);
           	  if (n < 0) {
           	  	  perror("ERROR writing to socket");
           	  	  exit(1);
@@ -343,7 +412,7 @@ void select_cmd_action(int sock,CMD_Frame *cmd,CONFIG_1_Frame *myconf1, CONFIG_F
           case 0x05:  // Transmit Configuration #2 Record Frame
           	  // copiar current config quando requisitado, senao sobrescreve a cada
           	  size = myconf2->pack(&buffer);
-          	  n = write(sock,buffer,size); 
+          	  n = SOCKET_WRITE(sock,buffer,size);
           	  if (n < 0) {
           	  	  perror("ERROR writing to socket");
           	  	  exit(1);
@@ -367,7 +436,7 @@ void *tx_data(void *args){
         while(my_args->send_data_flag){
         	my_args->my_data->SOC_set(1149577200+i);
         	size = my_args->my_data->pack(&buffer);
-        	n = write(my_args->sock,buffer,size); 
+        	n = SOCKET_WRITE(my_args->sock,buffer,size);
         	usleep(1E6/rate);
           	cout << "N: " << n << endl;
           	if (n < 0) {

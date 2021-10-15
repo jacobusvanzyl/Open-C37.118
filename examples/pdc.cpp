@@ -17,10 +17,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h> 
+#include <string.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <string.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#endif
 
 #include "c37118.h"
 #include "c37118configuration.h"
@@ -28,7 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "c37118data.h"
 #include "c37118header.h"
 #include "c37118command.h"
-#include <unistd.h>
 #include <iostream>
 
 // off the top of my head
@@ -99,14 +104,28 @@ void select_cmd_action(int sock, CMD_Frame *cmd,CONFIG_1_Frame *myconf1, CONFIG_
 * Simulate a PMU server/dispatcher C37.118-2011
 */
 
+#ifdef _WIN32
+#define SOCKET_READ(sockfd,buffer_rx,size) recv((sockfd), (char*)(buffer_rx), (size), 0)
+#define SOCKET_WRITE(sockfd,buffer_tx,size) send((sockfd), (const char*)(buffer_tx), (size), 0);
+#define SOCKET_CLOSE closesocket
+#else
+#define SOCKET_READ(sockfd,buffer,size) write((sockfd),(buffer_tx),(size))
+#define SOCKET_WRITE(sockfd,buffer_tx,size) write((sockfd), (buffer_tx), (size))
+#define SOCKED_CLOSE close
+#endif
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 
 int main( int argc, char *argv[] ){
     int sockfd, newsockfd, portno, clilen;
     int pid;
     unsigned char *buffer_tx, buffer_rx[SIZE_BUFFER];
     struct sockaddr_in serv_addr, cli_addr;
-    int  n;
-    	unsigned short size ;
+    int n;
+    unsigned short size;
     	
     	
     CMD_Frame *my_cmd = new CMD_Frame();
@@ -114,17 +133,26 @@ int main( int argc, char *argv[] ){
     CONFIG_1_Frame *my_config1 = new CONFIG_1_Frame();
     HEADER_Frame *my_header = new HEADER_Frame("");
 
+#ifdef _WIN32
+    WSADATA wsaData;
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != 0) {
+        printf("WSAStartup failed with error: %d\n", iResult);
+        exit(1);
+    }
+#endif
+
     /* First call to socket() function */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    int on =1;
-     int status = setsockopt(sockfd, SOL_SOCKET,SO_REUSEADDR, (const char *) &on, sizeof(on));
+    int on = 1;
+    int status = setsockopt(sockfd, SOL_SOCKET,SO_REUSEADDR, (const char *) &on, sizeof(on));
     if (sockfd < 0) 
     {
         perror("ERROR opening socket");
         exit(1);
     }
     /* Initialize socket structure */
-    bzero((char *) &serv_addr, sizeof(serv_addr));
+    memset((char *) &serv_addr, 0, sizeof(serv_addr));
     portno = TCP_PORT;
     serv_addr.sin_family = AF_INET;
     //serv_addr.sin_addr.s_addr = inet_addr("192.168.0.11");
@@ -145,31 +173,31 @@ int main( int argc, char *argv[] ){
     my_cmd->IDCODE_set(7);
     
     size = my_cmd->pack(&buffer_tx);
-    n = write(sockfd,buffer_tx,size); 
+    n = SOCKET_WRITE(sockfd,buffer_tx,size);
     if (n < 0) {
     	    perror("ERROR writing to socket");
             exit(1);
     }
    
     //REceive Config 2 
-    size = read(sockfd, buffer_rx, SIZE_BUFFER);
+    size = SOCKET_READ(sockfd, buffer_rx, SIZE_BUFFER);
     my_config2->unpack(buffer_rx);
     
-   // Create data with config frame received 
-   DATA_Frame *my_data = new DATA_Frame(my_config2);
+    // Create data with config frame received 
+    DATA_Frame *my_data = new DATA_Frame(my_config2);
     
     // Request Header Frame
     
     my_cmd->CMD_set(0x03);
     size = my_cmd->pack(&buffer_tx);
-    n = write(sockfd,buffer_tx,size); 
+    n = SOCKET_WRITE(sockfd,buffer_tx,size);
     if (n < 0) {
     	    perror("ERROR writing to socket");
             exit(1);
     }
     
     //REceive Header 2 
-    size = read(sockfd, buffer_rx, SIZE_BUFFER);
+    size = SOCKET_READ(sockfd, buffer_rx, SIZE_BUFFER);
     my_header->unpack(buffer_rx);
     cout << "INFO: " << my_header->DATA_get() << endl;
     
@@ -181,7 +209,7 @@ int main( int argc, char *argv[] ){
     // Enable DATA ON 
     my_cmd->CMD_set(0x02);
     size = my_cmd->pack(&buffer_tx);
-    n = write(sockfd,buffer_tx,size); 
+    n = SOCKET_WRITE(sockfd,buffer_tx,size);
     if (n < 0) {
     	    perror("ERROR writing to socket");
             exit(1);
@@ -190,7 +218,7 @@ int main( int argc, char *argv[] ){
     int k, i = 0;
     //REceive Data
     for(i = 0 ; i < 200 ; i++){
-    	    size = read(sockfd, buffer_rx, SIZE_BUFFER);
+    	    size = SOCKET_READ(sockfd, buffer_rx, SIZE_BUFFER);
     	  if (size > 0) {
     	    my_data->unpack(buffer_rx);
     	   // for (k =0 ; k < my_data->associate_current_config->pmu_station_list[0]->PHNMR_get(); k++){
@@ -213,12 +241,12 @@ int main( int argc, char *argv[] ){
     // Enable DATA OFF 
     my_cmd->CMD_set(0x01);
     size = my_cmd->pack(&buffer_tx);
-    n = write(sockfd,buffer_tx,size); 
+    n = SOCKET_WRITE(sockfd,buffer_tx,size);
     if (n < 0) {
     	    perror("ERROR writing to socket");
             exit(1);
     }
-   close(sockfd);
-   return EXIT_SUCCESS;
-} 
+    SOCKET_CLOSE(sockfd);
+    return EXIT_SUCCESS;
+}
   
