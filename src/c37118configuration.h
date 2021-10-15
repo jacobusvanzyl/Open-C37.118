@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 class CONFIG_Frame : public C37118{
 	public: 
-	CONFIG_Frame();	
+	CONFIG_Frame();
 		
 	/**
 	* SET Methods

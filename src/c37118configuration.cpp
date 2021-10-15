@@ -26,10 +26,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Add Header Default 0xAA|0x31=Conf2 --> or 0x21 = Conf1
 */
 
-CONFIG_Frame::CONFIG_Frame(){
+CONFIG_Frame::CONFIG_Frame() {
 	//Set header with RUNNING CONFIG (config mode 2)
 	this->SYNC = (A_SYNC_AA << 8 | A_SYNC_CFG2);
 	this->NUM_PMU = 0;
+	this->TIME_BASE = 0;
+	this->NUM_PMU = 0;
+	this->DATA_RATE = 0;
 }
 
 /**
@@ -79,7 +82,7 @@ void CONFIG_Frame::PMUSTATION_ADD(PMU_Station *PS){
 */
 PMU_Station *CONFIG_Frame::PMUSTATION_GETbyIDCODE(unsigned short idcode){
 	int found = 0;
-	for (int i =0; i < this->pmu_station_list.size() ; i++){
+	for (unsigned int i =0; i < this->pmu_station_list.size() ; i++){
 		if (this->pmu_station_list[i]->IDCODE_get() == idcode){
 			found = i;
 		}
@@ -101,8 +104,7 @@ unsigned short CONFIG_Frame::DATA_RATE_get(){
 * Values stored in this class
 */
 void CONFIG_Frame::unpack(unsigned char *buffer){
-     	unsigned char *buffer2;
-     	unsigned char *aux_buffer, *aux_buffer2 ;
+     	unsigned char *aux_buffer, *aux_buffer2 = nullptr;
 
      	aux_buffer = buffer;
 		this->SYNC_set(ntohs(*((unsigned short*)(aux_buffer))));
@@ -198,12 +200,14 @@ void CONFIG_Frame::unpack(unsigned char *buffer){
 		this->PMUSTATION_ADD(PS);
 		}
 		
-		// DATA_RATE
-		this->DATA_RATE_set(ntohs(*((unsigned short*)(aux_buffer2))));
-		aux_buffer2 +=2;
-		
-		// CRC (PREVIOUS COMPUTED in PACK/UNPACK Methods)		
-		this->CHK_set(ntohs(*(unsigned short *)(aux_buffer2)));
+		if (aux_buffer2 != nullptr) {
+			// DATA_RATE
+			this->DATA_RATE_set(ntohs(*((unsigned short*)(aux_buffer2))));
+			aux_buffer2 += 2;
+
+			// CRC (PREVIOUS COMPUTED in PACK/UNPACK Methods)		
+			this->CHK_set(ntohs(*(unsigned short*)(aux_buffer2)));
+		}
 }
 
 /**
@@ -279,7 +283,7 @@ unsigned short CONFIG_Frame::pack(unsigned char **buff){
 		// Channels Name
 		//Phasor
 		for(int j =0 ;j< this->pmu_station_list[i]->PHNMR_get() ; j++){
-			strcpy (cstr, this->pmu_station_list[i]->PH_NAME_get(j).c_str());
+			strcpy(cstr, this->pmu_station_list[i]->PH_NAME_get(j).c_str());
 			for(int ptr =0 ; ptr< 16;ptr++){
 				aux_buff[ptr]=cstr[ptr];
 			}
@@ -287,7 +291,7 @@ unsigned short CONFIG_Frame::pack(unsigned char **buff){
 		}
 		//Analog
 		for(int j=0 ; j < this->pmu_station_list[i]->ANNMR_get() ; j++){
-			strcpy (cstr, this->pmu_station_list[i]->AN_NAME_get(j).c_str());
+			strcpy(cstr, this->pmu_station_list[i]->AN_NAME_get(j).c_str());
 			for(int ptr =0 ; ptr< 16;ptr++){
 				aux_buff[ptr]=cstr[ptr];
 			}
@@ -295,7 +299,7 @@ unsigned short CONFIG_Frame::pack(unsigned char **buff){
 		}
 		//Digital
 		for(int j =0 ; j < 16*this->pmu_station_list[i]->DGNMR_get() ; j++){
-			strcpy (cstr, this->pmu_station_list[i]->DG_NAME_get(j).c_str());
+			strcpy(cstr, this->pmu_station_list[i]->DG_NAME_get(j).c_str());
 			for(int ptr =0 ; ptr< 16;ptr++){
 				aux_buff[ptr]=cstr[ptr];
 			}

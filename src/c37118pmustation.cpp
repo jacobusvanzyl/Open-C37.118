@@ -38,10 +38,18 @@ PMU_Station::PMU_Station(string name,short idcode,bool FREQ_TYPE , bool ANALOG_T
 * Usualy used to receive a frame config from others PMU/PDC devices
 */
 // Used to received a config_frame - Like PDC
-PMU_Station::PMU_Station(){
-    this->PHNMR = 0;
-    this->ANNMR = 0;
-    this->DGNMR = 0;
+PMU_Station::PMU_Station() {
+	this->PHNMR = 0;
+	this->ANNMR = 0;
+	this->DGNMR = 0;
+
+	this->CFGCNT = 0;;
+	this->IDCODE = 0;;
+	this->FORMAT = 0;;
+	this->FNOM = 0;;
+	this->STAT = 0;;
+	this->FREQ = 0;;
+	this->DFREQ = 0;;
 }
 
 
@@ -163,7 +171,7 @@ void PMU_Station::ANALOG_add(string name, unsigned int type){
 *  NORMAL = MSB Bytes and VALID is LSB Bytes
 */
 void PMU_Station::DIGITAL_add(vector<string> name, unsigned short normal, unsigned short valid){
-	for(int i=0; i< name.size() ; i++){ 
+	for(unsigned int i=0; i< name.size() ; i++){
 		name[i].append(16,' ');
 		this->CHNAM_Digital.push_back(name[i].substr(0,16));
 	}

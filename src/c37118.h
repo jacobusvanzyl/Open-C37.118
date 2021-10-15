@@ -20,13 +20,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h> 
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <string>
 #include <string.h>
 #include <vector>
 #include <complex>
 #include <iostream>
+
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <sys/socket.h>
+#include <netinet/in.h>
+#endif
 
 /**
 * Complex FLOAT type

@@ -88,15 +88,15 @@ unsigned short HEADER_Frame::pack(unsigned char **buff){
 	unsigned long *lptr;
 	string str = this->DATA_get();
 	
-	unsigned short size = 16 + str.size();
+	unsigned short size = 16 + (unsigned short)str.size();
 	
 	// set frame size
 	this->FRAMESIZE_set(size);
-	
 	//buff size reserved
 	*buff = (unsigned char *) malloc (this->FRAMESIZE_get()*sizeof(char));
 	//copy buff memory address
 	aux_buff = *buff;
+	if (aux_buff == nullptr) throw "Out of memory";
 	//create a short and long pointers, and increment by byte_size(2,4...)
 	shptr=(unsigned short *) (aux_buff);
 	*shptr = htons(this->SYNC_get()); aux_buff +=2;
@@ -111,7 +111,7 @@ unsigned short HEADER_Frame::pack(unsigned char **buff){
 	char * cstr = new char [str.size()];
 	//Get name string and convert to char string
 	strcpy (cstr, str.c_str());
-	for(int ptr =0 ; ptr< str.size();ptr++){
+	for(unsigned int ptr =0 ; ptr< str.size();ptr++){
 		aux_buff[ptr]=cstr[ptr];
 	}
 	aux_buff += str.size();

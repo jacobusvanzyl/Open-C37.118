@@ -33,6 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 CMD_Frame::CMD_Frame(){
 	this->SYNC = (A_SYNC_AA << 8 | A_SYNC_CMD);
 	this->FRAMESIZE = 18;
+	this->CMD = 0;
+	this->EXTRAFRAME = 0;
 }
 
 /**
@@ -67,7 +69,6 @@ unsigned char *CMD_Frame::EXTRAFRAME_get(){
 * Values stored in this class
 */
 void CMD_Frame::unpack(unsigned char *buffer){
-     	unsigned char *buffer2;
 		this->SYNC_set(ntohs(*((unsigned short*)(buffer))));
 		this->FRAMESIZE_set(ntohs(*((unsigned short*)(buffer+2))));
 		this->IDCODE_set(ntohs(*((unsigned short*)(buffer+4))));

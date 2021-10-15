@@ -331,7 +331,7 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 * Values stored in this class
 */
 void DATA_Frame::unpack(unsigned char *buffer){
-    	unsigned char *aux_buffer, *aux_buffer2 ;
+    	unsigned char *aux_buffer ;
     	myData aux_conv1,aux_conv2;
     	unsigned short aux1, aux2;
     	aux_buffer = buffer;
@@ -397,13 +397,13 @@ void DATA_Frame::unpack(unsigned char *buffer){
 				// Coord Polar
 				if (this->associate_current_config->pmu_station_list[i]->FORMAT_COORD_get()){
 					aux = (aux1*this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
-					this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_set(polar((float)(((float)aux)/1E5),(float)(((float)aux2)/1E4) ),j);  
+					this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_set(polar((float)(((float)aux)/1E5f),(float)(((float)aux2)/1E4f) ),j);  
 				}
 				// Coord Recta
 				else{
 					aux = (aux1*this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
 					aux_b = (aux2*this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
-					this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_set(Complex((((float)aux)/1E5),(((float)aux_b)/1E5)),j);
+					this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_set(Complex((((float)aux)/1E5f),(((float)aux_b)/1E5f)),j);
 				}
 				
 				
@@ -445,9 +445,9 @@ void DATA_Frame::unpack(unsigned char *buffer){
 			aux_buffer +=2;
 
 			if(this->associate_current_config->pmu_station_list[i]->FNOM_get())
-				this->associate_current_config->pmu_station_list[i]->FREQ_set(50.0+((float)aux1)/1000);
+				this->associate_current_config->pmu_station_list[i]->FREQ_set(50.0f+((float)aux1)/1000);
 			else
-				this->associate_current_config->pmu_station_list[i]->FREQ_set(60.0+((float)aux1)/1000);
+				this->associate_current_config->pmu_station_list[i]->FREQ_set(60.0f+((float)aux1)/1000);
 				
 			this->associate_current_config->pmu_station_list[i]->DFREQ_set(((float)aux2)/100);
 		
