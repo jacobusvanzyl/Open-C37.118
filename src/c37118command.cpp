@@ -40,7 +40,7 @@ CMD_Frame::CMD_Frame() {
 /**
 *  Set EXTRAFRAME Field from Command Frame
 */
-void CMD_Frame::EXTRAFRAME_set(unsigned char* value) {
+void CMD_Frame::EXTRAFRAME_set(uint8_t* value) {
 	this->EXTRAFRAME = value;
 }
 /**
@@ -59,7 +59,7 @@ uint16_t CMD_Frame::CMD_get() {
 /**
 *  Get EXTRAFRAME Field from Command Frame
 */
-unsigned char* CMD_Frame::EXTRAFRAME_get() {
+uint8_t* CMD_Frame::EXTRAFRAME_get() {
 	return this->EXTRAFRAME;
 }
 
@@ -68,7 +68,7 @@ unsigned char* CMD_Frame::EXTRAFRAME_get() {
 * Received a frame buffer, parse all fields until FRAMESIZE has been reached
 * Values stored in this class
 */
-void CMD_Frame::unpack(unsigned char* buffer) {
+void CMD_Frame::unpack(uint8_t* buffer) {
 	this->SYNC_set(ntohs(*((uint16_t*)(buffer))));
 	this->FRAMESIZE_set(ntohs(*((uint16_t*)(buffer + 2))));
 	this->IDCODE_set(ntohs(*((uint16_t*)(buffer + 4))));
@@ -76,9 +76,9 @@ void CMD_Frame::unpack(unsigned char* buffer) {
 	this->FRACSEC_set(ntohl(*((uint32_t*)(buffer + 10))));
 	this->CMD_set(ntohs(*((uint16_t*)(buffer + 14))));
 	// EXTRAFRAME needs a special treatment, user defined data
-	// unsigned char array to store the data
+	// uint8_t array to store the data
 	int32_t ptr = 0;
-	this->EXTRAFRAME = (unsigned char*)malloc(sizeof(char) * (this->FRAMESIZE_get() - 18));
+	this->EXTRAFRAME = (uint8_t*)malloc(sizeof(uint8_t) * (this->FRAMESIZE_get() - 18));
 	for (ptr; ptr < this->FRAMESIZE_get() - 18; ptr++) {
 		this->EXTRAFRAME[ptr] = buffer[ptr + 16];
 	}
@@ -91,12 +91,12 @@ void CMD_Frame::unpack(unsigned char* buffer) {
 * Mount a new command frame based on values store in the class,
 * special int16_t and int32_t pointers are needs to populate the buffer.
 */
-uint16_t CMD_Frame::pack(unsigned char** buff) {
-	unsigned char* aux_buff;
+uint16_t CMD_Frame::pack(uint8_t** buff) {
+	uint8_t* aux_buff;
 	uint16_t* shptr;
 	uint32_t* lptr;
 	//buff size reserved
-	*buff = (unsigned char*)malloc(this->FRAMESIZE_get() * sizeof(char));
+	*buff = (uint8_t*)malloc(this->FRAMESIZE_get() * sizeof(uint8_t));
 	//copy buff memory address
 	aux_buff = *buff;
 	//create a int16_t and int32_t pointers, and increment by byte_size(2,4...)
@@ -113,7 +113,7 @@ uint16_t CMD_Frame::pack(unsigned char** buff) {
 	shptr = (uint16_t*)(aux_buff);
 	*shptr = htons(this->CMD_get()); aux_buff += 2;
 	// EXTRAFRAME needs a special treatment, user defined data
-	// unsigned char array to store the data
+	// uint8_t array to store the data
 	int32_t ptr = 0;
 	for (ptr; ptr < this->FRAMESIZE_get() - 18; ptr++) {
 		aux_buff[ptr] = this->EXTRAFRAME[ptr];

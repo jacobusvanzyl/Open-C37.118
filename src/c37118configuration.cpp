@@ -103,8 +103,8 @@ uint16_t CONFIG_Frame::DATA_RATE_get() {
 * Received a frame buffer, parse all fields until FRAMESIZE has been reached
 * Values stored in this class
 */
-void CONFIG_Frame::unpack(unsigned char* buffer) {
-	unsigned char* aux_buffer, * aux_buffer2 = nullptr;
+void CONFIG_Frame::unpack(uint8_t* buffer) {
+	uint8_t* aux_buffer, * aux_buffer2 = nullptr;
 
 	aux_buffer = buffer;
 	this->SYNC_set(ntohs(*((uint16_t*)(aux_buffer))));
@@ -217,7 +217,7 @@ void CONFIG_Frame::unpack(unsigned char* buffer) {
 * total frame size = 24 + NUM_PMU*(26 + 16*(PHNMR+ANNMR+16*DGNMR)
 *                                  + 4*PHNMR + 4*ANNMR + 4*DGNMR + 4);
 */
-uint16_t CONFIG_Frame::pack(unsigned char** buff) {
+uint16_t CONFIG_Frame::pack(uint8_t** buff) {
 	// total frame size = 24 + NUM_PMU*(26 + 16*(PHNMR+ANNMR+16*DGNMR) + 4*PHNMR + 4*ANNMR + 4*DGNMR + 4);
 	uint16_t size = 24;
 
@@ -232,12 +232,12 @@ uint16_t CONFIG_Frame::pack(unsigned char** buff) {
 	this->FRAMESIZE_set(size);
 
 	//pointers to buffer
-	unsigned char* aux_buff;
+	uint8_t* aux_buff;
 	uint16_t* shptr;
 	uint32_t* lptr;
 
 	//buff size reserved
-	*buff = (unsigned char*)malloc(this->FRAMESIZE * sizeof(char));
+	*buff = (uint8_t*)malloc(this->FRAMESIZE * sizeof(uint8_t));
 	//copy buff memory address
 	aux_buff = *buff;
 

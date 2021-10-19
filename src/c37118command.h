@@ -35,25 +35,25 @@ public:
 	* SET Methods
 	*/
 	void CMD_set(uint16_t value);
-	void EXTRAFRAME_set(unsigned char* value);
+	void EXTRAFRAME_set(uint8_t* value);
 
 	/**
 	* GET Methods
 	*/
 	uint16_t CMD_get();
-	unsigned char* EXTRAFRAME_get();
+	uint8_t* EXTRAFRAME_get();
 
 	/**
 	* PACK/UNPACK Methods
 	*/
-	uint16_t pack(unsigned char** buffer);
-	void unpack(unsigned char* buffer);
+	uint16_t pack(uint8_t** buffer);
+	void unpack(uint8_t* buffer);
 
 	/**
 	* DATA STORE
 	*/
 protected:
 	uint16_t CMD;
-	unsigned char* EXTRAFRAME;
+	uint8_t* EXTRAFRAME;
 };
 #endif

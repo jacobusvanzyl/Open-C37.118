@@ -122,7 +122,7 @@ void select_cmd_action(int32_t sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CO
 int32_t main(int32_t argc, char* argv[]) {
 	int32_t sockfd, newsockfd, portno, clilen;
 	int32_t pid;
-	unsigned char* buffer_tx, buffer_rx[SIZE_BUFFER];
+	uint8_t* buffer_tx, buffer_rx[SIZE_BUFFER];
 	struct sockaddr_in serv_addr, cli_addr;
 	int32_t n;
 	uint16_t size;

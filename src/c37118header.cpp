@@ -56,8 +56,8 @@ string HEADER_Frame::DATA_get() {
 * Received a frame buffer, parse all fields until FRAMESIZE has been reached
 * Values stored in this class
 */
-void HEADER_Frame::unpack(unsigned char* buffer) {
-	unsigned char* buffer2;
+void HEADER_Frame::unpack(uint8_t* buffer) {
+	uint8_t* buffer2;
 	uint16_t size_data;
 	this->SYNC_set(ntohs(*((uint16_t*)(buffer))));
 	this->FRAMESIZE_set(ntohs(*((uint16_t*)(buffer + 2))));
@@ -82,8 +82,8 @@ void HEADER_Frame::unpack(unsigned char* buffer) {
 * Mount a new command frame based on values store in the the class,
 * special int16_t and int32_t pointers are needs to populate the buffer.
 */
-uint16_t HEADER_Frame::pack(unsigned char** buff) {
-	unsigned char* aux_buff;
+uint16_t HEADER_Frame::pack(uint8_t** buff) {
+	uint8_t* aux_buff;
 	uint16_t* shptr;
 	uint32_t* lptr;
 	string str = this->DATA_get();
@@ -93,7 +93,7 @@ uint16_t HEADER_Frame::pack(unsigned char** buff) {
 	// set frame size
 	this->FRAMESIZE_set(size);
 	//buff size reserved
-	*buff = (unsigned char*)malloc(this->FRAMESIZE_get() * sizeof(char));
+	*buff = (uint8_t*)malloc(this->FRAMESIZE_get() * sizeof(uint8_t));
 	//copy buff memory address
 	aux_buff = *buff;
 	if (aux_buff == nullptr) throw "Out of memory";

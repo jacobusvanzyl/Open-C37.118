@@ -45,8 +45,8 @@ public:
 	* PACK/UNPACK Methods
 	*/
 
-	uint16_t pack(unsigned char** buff);
-	void unpack(unsigned char* buffer);
+	uint16_t pack(uint8_t** buff);
+	void unpack(uint8_t* buffer);
 
 	/**
 	* DATA STORE

@@ -43,7 +43,7 @@ typedef union _data {
 	char  s[4];
 } myData;
 
-uint16_t DATA_Frame::pack(unsigned char** buff) {
+uint16_t DATA_Frame::pack(uint8_t** buff) {
 	myData aux_conv;
 
 	uint16_t size = 14;
@@ -97,14 +97,14 @@ uint16_t DATA_Frame::pack(unsigned char** buff) {
 	this->FRAMESIZE_set(size);
 
 	//pointers to buffer
-	unsigned char* aux_buff;
+	uint8_t* aux_buff;
 	uint16_t* shptr;
 	uint32_t* lptr;
-	unsigned char* fptr;
+	uint8_t* fptr;
 
 	//buff size reserved
 	if (*buff == NULL) {
-		*buff = (unsigned char*)malloc(this->FRAMESIZE_get() * sizeof(char));
+		*buff = (uint8_t*)malloc(this->FRAMESIZE_get() * sizeof(uint8_t));
 	}
 	//copy buff memory address
 	aux_buff = *buff;
@@ -144,24 +144,24 @@ uint16_t DATA_Frame::pack(unsigned char** buff) {
 					//Float Converter Struct			
 					aux_conv.f = abs(this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j));
 					// Copy float to buffer
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[3]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[2]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[1]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[0]; aux_buff++;
 					//Float Converter Struct
 					aux_conv.f = arg(this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j));
 					// Copy float to buffer
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[3]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[2]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[1]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[0]; aux_buff++;
 				}
 				// Coord Recta
@@ -169,25 +169,25 @@ uint16_t DATA_Frame::pack(unsigned char** buff) {
 					//Float Converter Struct
 					aux_conv.f = this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j).real();
 					// Copy float to buffer
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[3]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[2]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[1]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[0]; aux_buff++;
 
 					//Float Converter Struct
 					aux_conv.f = this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j).imag();
 					// Copy float to buffer
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[3]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[2]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[1]; aux_buff++;
-					fptr = (unsigned char*)(aux_buff);
+					fptr = (uint8_t*)(aux_buff);
 					*fptr = aux_conv.s[0]; aux_buff++;
 				}
 			}
@@ -231,24 +231,24 @@ uint16_t DATA_Frame::pack(unsigned char** buff) {
 
 			aux_conv.f = this->associate_current_config->pmu_station_list[i]->FREQ_get();
 			// Copy float to buffer
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[3]; aux_buff++;
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[2]; aux_buff++;
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[1]; aux_buff++;
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[0]; aux_buff++;
 
 			aux_conv.f = this->associate_current_config->pmu_station_list[i]->DFREQ_get();
 			// Copy float to buffer
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[3]; aux_buff++;
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[2]; aux_buff++;
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[1]; aux_buff++;
-			fptr = (unsigned char*)(aux_buff);
+			fptr = (uint8_t*)(aux_buff);
 			*fptr = aux_conv.s[0]; aux_buff++;
 		}
 
@@ -279,13 +279,13 @@ uint16_t DATA_Frame::pack(unsigned char** buff) {
 			if (this->associate_current_config->pmu_station_list[i]->FORMAT_ANALOG_TYPE_get()) {
 				aux_conv.f = this->associate_current_config->pmu_station_list[i]->ANALOG_VALUE_get(j);
 				// Copy float to buffer
-				fptr = (unsigned char*)(aux_buff);
+				fptr = (uint8_t*)(aux_buff);
 				*fptr = aux_conv.s[3]; aux_buff++;
-				fptr = (unsigned char*)(aux_buff);
+				fptr = (uint8_t*)(aux_buff);
 				*fptr = aux_conv.s[2]; aux_buff++;
-				fptr = (unsigned char*)(aux_buff);
+				fptr = (uint8_t*)(aux_buff);
 				*fptr = aux_conv.s[1]; aux_buff++;
-				fptr = (unsigned char*)(aux_buff);
+				fptr = (uint8_t*)(aux_buff);
 				*fptr = aux_conv.s[0]; aux_buff++;
 			}
 			// Data mode = Integer 16 bits
@@ -330,8 +330,8 @@ uint16_t DATA_Frame::pack(unsigned char** buff) {
 * Received a frame buffer, parse all fields until FRAMESIZE has been reached
 * Values stored in this class
 */
-void DATA_Frame::unpack(unsigned char* buffer) {
-	unsigned char* aux_buffer;
+void DATA_Frame::unpack(uint8_t* buffer) {
+	uint8_t* aux_buffer;
 	myData aux_conv1, aux_conv2;
 	uint16_t aux1, aux2;
 	aux_buffer = buffer;
@@ -357,22 +357,22 @@ void DATA_Frame::unpack(unsigned char* buffer) {
 			// Data mode = float
 			if (this->associate_current_config->pmu_station_list[i]->FORMAT_PHASOR_TYPE_get()) {
 				//Float Converter Struct
-				aux_conv1.s[3] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[3] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv1.s[2] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[2] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv1.s[1] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[1] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv1.s[0] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[0] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
 
-				aux_conv2.s[3] = (*((unsigned char*)(aux_buffer)));
+				aux_conv2.s[3] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv2.s[2] = (*((unsigned char*)(aux_buffer)));
+				aux_conv2.s[2] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv2.s[1] = (*((unsigned char*)(aux_buffer)));
+				aux_conv2.s[1] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv2.s[0] = (*((unsigned char*)(aux_buffer)));
+				aux_conv2.s[0] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
 				// Coord Polar
 				if (this->associate_current_config->pmu_station_list[i]->FORMAT_COORD_get()) {
@@ -415,21 +415,21 @@ void DATA_Frame::unpack(unsigned char* buffer) {
 		// Data mode = float
 		if (this->associate_current_config->pmu_station_list[i]->FORMAT_FREQ_TYPE_get()) {
 			//Float Converter Struct
-			aux_conv1.s[3] = (*((unsigned char*)(aux_buffer)));
+			aux_conv1.s[3] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv1.s[2] = (*((unsigned char*)(aux_buffer)));
+			aux_conv1.s[2] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv1.s[1] = (*((unsigned char*)(aux_buffer)));
+			aux_conv1.s[1] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv1.s[0] = (*((unsigned char*)(aux_buffer)));
+			aux_conv1.s[0] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv2.s[3] = (*((unsigned char*)(aux_buffer)));
+			aux_conv2.s[3] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv2.s[2] = (*((unsigned char*)(aux_buffer)));
+			aux_conv2.s[2] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv2.s[1] = (*((unsigned char*)(aux_buffer)));
+			aux_conv2.s[1] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
-			aux_conv2.s[0] = (*((unsigned char*)(aux_buffer)));
+			aux_conv2.s[0] = (*((uint8_t*)(aux_buffer)));
 			aux_buffer++;
 
 			this->associate_current_config->pmu_station_list[i]->FREQ_set(aux_conv1.f);
@@ -457,13 +457,13 @@ void DATA_Frame::unpack(unsigned char* buffer) {
 		for (int32_t j = 0; j < this->associate_current_config->pmu_station_list[i]->ANNMR_get(); j++) {
 			// Data mode = float
 			if (this->associate_current_config->pmu_station_list[i]->FORMAT_ANALOG_TYPE_get()) {
-				aux_conv1.s[3] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[3] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv1.s[2] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[2] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv1.s[1] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[1] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
-				aux_conv1.s[0] = (*((unsigned char*)(aux_buffer)));
+				aux_conv1.s[0] = (*((uint8_t*)(aux_buffer)));
 				aux_buffer++;
 
 				this->associate_current_config->pmu_station_list[i]->ANALOG_VALUE_set(aux_conv1.f, j);

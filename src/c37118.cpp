@@ -102,13 +102,13 @@ uint16_t C37118::CHK_get() {
 * Protected Common Methods, Visible to all classes
 * Compute CRC check FRAME based on C37.118-2011
 */
-uint16_t C37118::Calc_CRC(unsigned char* sData, uint32_t iDataLen)
+uint16_t C37118::Calc_CRC(uint8_t* sData, uint32_t iDataLen)
 {
 	//// CRC-CCITT Calculation
 	// f(x) = x^16 + x^12 + x^5 + 1
 	//
 	// Derived from IEEE Std C37.118-2005 sample code 
-	// Example:  cout << "CRC of " << "Arnold" << " = " << Calc_CRC((unsigned char*)"Arnold") << endl;
+	// Example:  cout << "CRC of " << "Arnold" << " = " << Calc_CRC((uint8_t*)"Arnold") << endl;
 	uint16_t iCrc = 0xFFFF;   // 0xFFFF is specific for SynchroPhasor Data CRC
 	uint16_t iCalc1;
 	uint16_t iCalc2;

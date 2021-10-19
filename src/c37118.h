@@ -146,7 +146,7 @@ protected:
 	/**
 	* Compute CRC check FRAME based on C37.118-2011
 	*/
-	uint16_t Calc_CRC(unsigned char* sData, uint32_t iDataLen);
+	uint16_t Calc_CRC(uint8_t* sData, uint32_t iDataLen);
 
 	uint16_t SYNC;
 	uint16_t FRAMESIZE;

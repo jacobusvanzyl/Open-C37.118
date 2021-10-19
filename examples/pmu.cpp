@@ -336,8 +336,8 @@ void doprocessingThread(void* args)
 */
 void doprocessing(int32_t sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header) {
 	int32_t n;
-	unsigned char* buffer;
-	buffer = (unsigned char*)malloc(SIZE_BUFFER * sizeof(char));
+	uint8_t* buffer;
+	buffer = (uint8_t*)malloc(SIZE_BUFFER * sizeof(char));
 	CMD_Frame* cmd = new CMD_Frame();
 
 	while (1) {
@@ -363,8 +363,8 @@ void doprocessing(int32_t sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, 
 void select_cmd_action(int32_t sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header) {
 	int32_t n, i;
 	uint16_t size;
-	unsigned char* buffer;
-	unsigned char* buffer2;
+	uint8_t* buffer;
+	uint8_t* buffer2;
 	bool send_data_flag = false;
 	CONFIG_Frame* aux = new CONFIG_Frame();
 	struct threadarg t_arg;
@@ -428,7 +428,7 @@ void select_cmd_action(int32_t sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CO
 void* tx_data(void* args) {
 
 	uint16_t size, n;
-	unsigned char* buffer;
+	uint8_t* buffer;
 	struct threadarg* my_args = (struct threadarg*)(args);
 	int32_t i = 0;
 	uint16_t rate = my_args->my_data->associate_current_config->DATA_RATE_get();
