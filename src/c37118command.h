@@ -26,34 +26,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Note: EXTRAFRAME is a dynamic size, defined by user application
 *       Size(EXTRAFRAME) = Size(FRAMESIZE) - 18 bytes
 */
-class CMD_Frame : public C37118{
-	
-	public: 
+class CMD_Frame : public C37118 {
+
+public:
 	CMD_Frame();
-	
+
 	/**
 	* SET Methods
 	*/
 	void CMD_set(uint16_t value);
-	void EXTRAFRAME_set(unsigned char *value);
+	void EXTRAFRAME_set(unsigned char* value);
 
 	/**
 	* GET Methods
 	*/
 	uint16_t CMD_get();
-	unsigned char *EXTRAFRAME_get();
-	
+	unsigned char* EXTRAFRAME_get();
+
 	/**
 	* PACK/UNPACK Methods
 	*/
-	uint16_t pack(unsigned char **buffer);
-	void unpack(unsigned char *buffer);
-	
+	uint16_t pack(unsigned char** buffer);
+	void unpack(unsigned char* buffer);
+
 	/**
 	* DATA STORE
-	*/	
-	protected:
+	*/
+protected:
 	uint16_t CMD;
-	unsigned char *EXTRAFRAME;	
+	unsigned char* EXTRAFRAME;
 };
 #endif

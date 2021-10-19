@@ -29,10 +29,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Methods, Get/Set for each field to send and get Phasor Data frame
 * Note: DATA FRAME is a dynamic size, defined by a numbers of PMU
 */
-class DATA_Frame : public C37118{
-	public:	
-	DATA_Frame(CONFIG_Frame *cfg);	
-		
+class DATA_Frame : public C37118 {
+public:
+	DATA_Frame(CONFIG_Frame* cfg);
+
 	/**
 	* SET Methods
 	*/
@@ -41,18 +41,18 @@ class DATA_Frame : public C37118{
 	/**
 	* GET Methods
 	*/
-	
-	
+
+
 	/**
 	* PACK/UNPACK Methods
 	*/
-	uint16_t pack(unsigned char **buff);
-	void unpack(unsigned char *buffer);
-	
+	uint16_t pack(unsigned char** buff);
+	void unpack(unsigned char* buffer);
+
 	/**
 	* DATA STORE
-	*/	
-	CONFIG_Frame *associate_current_config;
-	
+	*/
+	CONFIG_Frame* associate_current_config;
+
 };
 #endif

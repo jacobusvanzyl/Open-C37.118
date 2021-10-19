@@ -26,11 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Note:DATA is a dynamic size, defined by user application
 *       Size(DATA) = Size(FRAMESIZE) - 16 bytes
 */
-class HEADER_Frame : public C37118{
-	
-public: 
+class HEADER_Frame : public C37118 {
+
+public:
 	HEADER_Frame(string info);
-	
+
 	/**
 	* SET Methods
 	*/
@@ -40,18 +40,18 @@ public:
 	* GET Methods
 	*/
 	string DATA_get();
-	
+
 	/**
 	* PACK/UNPACK Methods
 	*/
-	
-	uint16_t pack(unsigned char **buff);
-	void unpack(unsigned char *buffer);
-	
+
+	uint16_t pack(unsigned char** buff);
+	void unpack(unsigned char* buffer);
+
 	/**
 	* DATA STORE
-	*/	
-	protected:
+	*/
+protected:
 	string info;
 };
 #endif

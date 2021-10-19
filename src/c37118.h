@@ -55,13 +55,13 @@ typedef std::complex<float> Complex;
 #define A_SYNC_DATA 0x01
 /**
 * IEEE Std C37.118-2005 SynchroPhasor Message Prefixes
-* 0x11 = Header Frame byte. 
+* 0x11 = Header Frame byte.
 */
 //      r001 = Header Frame
 #define A_SYNC_HDR 0x11
 /**
 * IEEE Std C37.118-2005 SynchroPhasor Message Prefixes
-* 0x01 = Config1 Frame byte. 
+* 0x01 = Config1 Frame byte.
 */
 //      r010 = Config Frame 1
 #define A_SYNC_CFG1 0x21
@@ -73,14 +73,14 @@ typedef std::complex<float> Complex;
 #define A_SYNC_CFG2 0x31
 /**
 * IEEE Std C37.118-2005 SynchroPhasor Message Prefixes
-* 0x01 = Command Frame byte. 
+* 0x01 = Command Frame byte.
 */
 //      r100 = Command Frame
 #define A_SYNC_CMD 0x41
 
 /**
 * IEEE Std C37.118-2005 SynchroPhasor Bit Type
-* PHASOR CHANNEL NAME MEASURE TYPE 
+* PHASOR CHANNEL NAME MEASURE TYPE
 * 0x00 = VOLTAGE
 * 0x01 = CURRENT
 */
@@ -92,7 +92,7 @@ enum PHUNIT_Bit {
 
 /**
 * IEEE Std C37.118-2005 SynchroPhasor Bit Type
-* ANALOG CHANNEL NAME MEASURE TYPE 
+* ANALOG CHANNEL NAME MEASURE TYPE
 * 0x00 = SINGLE POINT ON WAVE
 * 0x01 = RMS ANALOG INPUT
 * 0x02 = PEAK ANALOG INPUT
@@ -101,17 +101,17 @@ enum PHUNIT_Bit {
 enum ANUNIT_Bit {
 	SINGLE_POINT_ON_WAVE = 0,
 	RMS_ANALOG_INPUT = 1,
-	PEAK_ANALOG_INPUT = 2,	
+	PEAK_ANALOG_INPUT = 2,
 };
 
 /**
 * IEEE Std C37.118-2005 SynchroPhasor Bit Type
-* PMU NOMINAL FREQUENCY OPERATION 
+* PMU NOMINAL FREQUENCY OPERATION
 * 0x00 = 60 Hz
 * 0x01 = 50 Hz
 */
 // NOMINAL FREQ
-enum FREQ_NOM{
+enum FREQ_NOM {
 	FN_60HZ = 0,
 	FN_50HZ = 1,
 };
@@ -119,8 +119,8 @@ enum FREQ_NOM{
 using namespace std;
 
 class C37118 {
-	
-public :
+
+public:
 
 	/**
 	* SET Methods
@@ -131,7 +131,7 @@ public :
 	void SOC_set(uint32_t value);
 	void FRACSEC_set(uint32_t value);
 	void CHK_set(uint16_t value);
-	
+
 	/**
 	* GET Methods
 	*/
@@ -142,18 +142,18 @@ public :
 	uint32_t FRACSEC_get();
 	uint16_t CHK_get();
 
-protected:	
-	/** 
+protected:
+	/**
 	* Compute CRC check FRAME based on C37.118-2011
 	*/
 	uint16_t Calc_CRC(unsigned char* sData, uint32_t iDataLen);
 
-	uint16_t SYNC;         
+	uint16_t SYNC;
 	uint16_t FRAMESIZE;
 	uint16_t IDCODE;
 	uint32_t SOC;
 	uint32_t FRACSEC;
 	uint16_t CHK;
-	
+
 };
 #endif

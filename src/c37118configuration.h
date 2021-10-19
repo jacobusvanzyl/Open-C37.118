@@ -25,10 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Methods, Get/Set for each field to send and get configuration frame
 * Note: CONFIG FRAME is a dynamic size, defined by a numbers of PMU
 */
-class CONFIG_Frame : public C37118{
-	public: 
+class CONFIG_Frame : public C37118 {
+public:
 	CONFIG_Frame();
-		
+
 	/**
 	* SET Methods
 	*/
@@ -42,25 +42,25 @@ class CONFIG_Frame : public C37118{
 	uint32_t TIME_BASE_get();
 	uint16_t NUM_PMU_get();
 	uint16_t DATA_RATE_get();
-	
+
 	/**
 	* PACK/UNPACK Methods
 	*/
-	uint16_t pack(unsigned char **buff);
-	void unpack(unsigned char *buffer);
-	
-	void PMUSTATION_ADD(PMU_Station *PS);
-	
-	PMU_Station *PMUSTATION_GETbyIDCODE(uint16_t idcode);
-	
-	
+	uint16_t pack(unsigned char** buff);
+	void unpack(unsigned char* buffer);
+
+	void PMUSTATION_ADD(PMU_Station* PS);
+
+	PMU_Station* PMUSTATION_GETbyIDCODE(uint16_t idcode);
+
+
 	//PMU UNIT LIST
-	vector<PMU_Station*> pmu_station_list ;
-	
+	vector<PMU_Station*> pmu_station_list;
+
 	/**
 	* DATA STORE
-	*/	
-	protected:
+	*/
+protected:
 	uint32_t TIME_BASE;
 	uint16_t NUM_PMU;
 	uint16_t DATA_RATE;
@@ -70,10 +70,10 @@ class CONFIG_Frame : public C37118{
 * C37.118-2011 CONFIGURATION 1 FRAME CLASS extends from CONFIG FRAME 2
 * Methods, Get/Set for each field to send and get configuration frame
 */
-class CONFIG_1_Frame : public CONFIG_Frame{
-	
-public: 
-	CONFIG_1_Frame();	
+class CONFIG_1_Frame : public CONFIG_Frame {
+
+public:
+	CONFIG_1_Frame();
 
 };
 #endif
