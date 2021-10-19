@@ -98,8 +98,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
 * Process Socket Packet C37.118-2011
 */
-void doprocessing(int sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
-void select_cmd_action(int sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
+void doprocessing(int32_t sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
+void select_cmd_action(int32_t sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
 /**
 * Simulate a PMU server/dispatcher C37.118-2011
 */
@@ -119,13 +119,13 @@ void select_cmd_action(int sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG
 #endif
 
 
-int main(int argc, char* argv[]) {
-	int sockfd, newsockfd, portno, clilen;
-	int pid;
+int32_t main(int32_t argc, char* argv[]) {
+	int32_t sockfd, newsockfd, portno, clilen;
+	int32_t pid;
 	unsigned char* buffer_tx, buffer_rx[SIZE_BUFFER];
 	struct sockaddr_in serv_addr, cli_addr;
-	int n;
-	unsigned short size;
+	int32_t n;
+	uint16_t size;
 
 
 	CMD_Frame* my_cmd = new CMD_Frame();
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
 
 #ifdef _WIN32
 	WSADATA wsaData;
-	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	int32_t iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		printf("WSAStartup failed with error: %d\n", iResult);
 		exit(1);
@@ -144,8 +144,8 @@ int main(int argc, char* argv[]) {
 
 	/* First call to socket() function */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	int on = 1;
-	int status = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on));
+	int32_t on = 1;
+	int32_t status = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on));
 	if (sockfd < 0)
 	{
 		perror("ERROR opening socket");
@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	int k, i = 0;
+	int32_t k, i = 0;
 	//REceive Data
 	for (i = 0; i < 200; i++) {
 		size = SOCKET_READ(sockfd, buffer_rx, SIZE_BUFFER);

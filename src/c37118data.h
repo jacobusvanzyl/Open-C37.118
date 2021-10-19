@@ -46,7 +46,7 @@ class DATA_Frame : public C37118{
 	/**
 	* PACK/UNPACK Methods
 	*/
-	unsigned short pack(unsigned char **buff);
+	uint16_t pack(unsigned char **buff);
 	void unpack(unsigned char *buffer);
 	
 	/**

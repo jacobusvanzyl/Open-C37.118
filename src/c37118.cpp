@@ -25,76 +25,76 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
 *  Set SYNC Field from All Frame
 */
-void C37118::SYNC_set(unsigned short value){
+void C37118::SYNC_set(uint16_t value){
 	this->SYNC = value;	
 }
 /**
 *  Set FRAMESIZE Field from All Frame
 */
-void C37118::FRAMESIZE_set(unsigned short value){
+void C37118::FRAMESIZE_set(uint16_t value){
 	this->FRAMESIZE = value;	
 }
 /**
 *  Set IDCODE Field from All Frame
 */
-void C37118::IDCODE_set(unsigned short value){
+void C37118::IDCODE_set(uint16_t value){
 	this->IDCODE = value;	
 }
 /**
 *  Set SOC Field from All Frame
 */
-void C37118::SOC_set(unsigned long value){
+void C37118::SOC_set(uint32_t value){
 	this->SOC = value;	
 }
 /**
 *  Set FRACSEC Field from All Frame
 */
-void C37118::FRACSEC_set(unsigned long value){
+void C37118::FRACSEC_set(uint32_t value){
 	this->FRACSEC = value;	
 }
 
 /**
 *  Set CRC CHECK Field from All Frame
 */
-void C37118::CHK_set(unsigned short value){
+void C37118::CHK_set(uint16_t value){
 	this->CHK = value;	
 }
 
 /**
 *  Get SYNC Field from All Frame
 */
-unsigned short C37118::SYNC_get(){
+uint16_t C37118::SYNC_get(){
 	return this->SYNC;
 }
 /**
 *  Get FRAMESIZE Field from All Frame
 */
-unsigned short C37118::FRAMESIZE_get(){
+uint16_t C37118::FRAMESIZE_get(){
 	return this->FRAMESIZE;
 }
 /**
 *  Get IDCODE Field from All Frame
 */
-unsigned short C37118::IDCODE_get(){
+uint16_t C37118::IDCODE_get(){
 	return this->IDCODE;
 }
 /**
 *  Get SOC Field from All Frame
 */
-unsigned long C37118::SOC_get(){
+uint32_t C37118::SOC_get(){
 	return this->SOC;
 }
 /**
 *  Get FRACSEC Field from All Frame
 */
-unsigned long C37118::FRACSEC_get(){
+uint32_t C37118::FRACSEC_get(){
 	return this->FRACSEC;
 }
 
 /**
 *  Get CRC CHECK Field from DATA Frame
 */
-unsigned short C37118::CHK_get(){
+uint16_t C37118::CHK_get(){
 	return this->CHK;
 }
 
@@ -102,17 +102,17 @@ unsigned short C37118::CHK_get(){
 * Protected Common Methods, Visible to all classes 
 * Compute CRC check FRAME based on C37.118-2011
 */
-unsigned short C37118::Calc_CRC(unsigned char* sData, unsigned int iDataLen)
+uint16_t C37118::Calc_CRC(unsigned char* sData, uint32_t iDataLen)
 {
   //// CRC-CCITT Calculation
   // f(x) = x^16 + x^12 + x^5 + 1
   //
   // Derived from IEEE Std C37.118-2005 sample code 
   // Example:  cout << "CRC of " << "Arnold" << " = " << Calc_CRC((unsigned char*)"Arnold") << endl;
-  unsigned short iCrc = 0xFFFF;   // 0xFFFF is specific for SynchroPhasor Data CRC
-  unsigned short iCalc1;
-  unsigned short iCalc2;
-  unsigned short ii;
+  uint16_t iCrc = 0xFFFF;   // 0xFFFF is specific for SynchroPhasor Data CRC
+  uint16_t iCalc1;
+  uint16_t iCalc2;
+  uint16_t ii;
   for (ii = 0; ii < iDataLen; ii++)
   {
     iCalc1 = (iCrc >> 8) ^ sData[ii];

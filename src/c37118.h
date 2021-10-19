@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <complex>
 #include <iostream>
+#include <stdint.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -124,35 +125,35 @@ public :
 	/**
 	* SET Methods
 	*/
-	void SYNC_set(unsigned short value);
-	void FRAMESIZE_set(unsigned short value);
-	void IDCODE_set(unsigned short value);
-	void SOC_set(unsigned long value);
-	void FRACSEC_set(unsigned long value);
-	void CHK_set(unsigned short value);
+	void SYNC_set(uint16_t value);
+	void FRAMESIZE_set(uint16_t value);
+	void IDCODE_set(uint16_t value);
+	void SOC_set(uint32_t value);
+	void FRACSEC_set(uint32_t value);
+	void CHK_set(uint16_t value);
 	
 	/**
 	* GET Methods
 	*/
-	unsigned short SYNC_get();
-	unsigned short FRAMESIZE_get();
-	unsigned short IDCODE_get();
-	unsigned long SOC_get();
-	unsigned long FRACSEC_get();
-	unsigned short CHK_get();
+	uint16_t SYNC_get();
+	uint16_t FRAMESIZE_get();
+	uint16_t IDCODE_get();
+	uint32_t SOC_get();
+	uint32_t FRACSEC_get();
+	uint16_t CHK_get();
 
 protected:	
 	/** 
 	* Compute CRC check FRAME based on C37.118-2011
 	*/
-	unsigned short Calc_CRC(unsigned char* sData, unsigned int iDataLen);
+	uint16_t Calc_CRC(unsigned char* sData, uint32_t iDataLen);
 
-	unsigned short SYNC;         
-	unsigned short FRAMESIZE;
-	unsigned short IDCODE;
-	unsigned long SOC;
-	unsigned long FRACSEC;
-	unsigned short CHK;
+	uint16_t SYNC;         
+	uint16_t FRAMESIZE;
+	uint16_t IDCODE;
+	uint32_t SOC;
+	uint32_t FRACSEC;
+	uint16_t CHK;
 	
 };
 #endif

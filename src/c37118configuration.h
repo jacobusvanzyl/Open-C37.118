@@ -32,26 +32,26 @@ class CONFIG_Frame : public C37118{
 	/**
 	* SET Methods
 	*/
-	void TIME_BASE_set(unsigned long value);
-	void NUM_PMU_set(unsigned short value);
-	void DATA_RATE_set(unsigned short value);
+	void TIME_BASE_set(uint32_t value);
+	void NUM_PMU_set(uint16_t value);
+	void DATA_RATE_set(uint16_t value);
 
 	/**
 	* GET Methods
 	*/
-	unsigned long TIME_BASE_get();
-	unsigned short NUM_PMU_get();
-	unsigned short DATA_RATE_get();
+	uint32_t TIME_BASE_get();
+	uint16_t NUM_PMU_get();
+	uint16_t DATA_RATE_get();
 	
 	/**
 	* PACK/UNPACK Methods
 	*/
-	unsigned short pack(unsigned char **buff);
+	uint16_t pack(unsigned char **buff);
 	void unpack(unsigned char *buffer);
 	
 	void PMUSTATION_ADD(PMU_Station *PS);
 	
-	PMU_Station *PMUSTATION_GETbyIDCODE(unsigned short idcode);
+	PMU_Station *PMUSTATION_GETbyIDCODE(uint16_t idcode);
 	
 	
 	//PMU UNIT LIST
@@ -61,9 +61,9 @@ class CONFIG_Frame : public C37118{
 	* DATA STORE
 	*/	
 	protected:
-	unsigned long TIME_BASE;
-	unsigned short NUM_PMU;
-	unsigned short DATA_RATE;
+	uint32_t TIME_BASE;
+	uint16_t NUM_PMU;
+	uint16_t DATA_RATE;
 };
 
 /**

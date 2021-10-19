@@ -95,7 +95,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define A_COMMA 0x2C    
 
 struct threadarg {
-	int sock;
+	int32_t sock;
 	DATA_Frame* my_data;
 	bool send_data_flag;
 };
@@ -107,7 +107,7 @@ struct threadarg {
 #define usleep(usec) Sleep((usec)/1000)
 
 struct DoprocessingThreadArgs {
-	int sock; CONFIG_1_Frame* myconf1;
+	int32_t sock; CONFIG_1_Frame* myconf1;
 	CONFIG_Frame* myconf2;
 	DATA_Frame* my_data;
 	HEADER_Frame* my_header;
@@ -122,26 +122,26 @@ void doprocessingThread(void* args);
 #endif
 
 #ifndef socklen_t
-#define socklen_t int
+#define socklen_t int32_t
 #endif
 
 /**
 * Process Socket Packet C37.118-2011
 */
-void doprocessing(int sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
-void select_cmd_action(int sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
+void doprocessing(int32_t sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
+void select_cmd_action(int32_t sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header);
 void* tx_data(void* threadarg);
 
 /**
 * Simulate a PMU server/dispatcher C37.118-2011
 */
-int main(int argc, char* argv[])
+int32_t main(int32_t argc, char* argv[])
 {
-	int sockfd, newsockfd, portno, clilen;
-	int pid;
+	int32_t sockfd, newsockfd, portno, clilen;
+	int32_t pid;
 	char buffer[SIZE_BUFFER];
 	struct sockaddr_in serv_addr, cli_addr;
-	int  n;
+	int32_t  n;
 
 	CONFIG_Frame* my_config2 = new CONFIG_Frame();
 	CONFIG_1_Frame* my_config1 = new CONFIG_1_Frame();
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
 
 #ifdef _WIN32
 	WSADATA wsaData;
-	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	int32_t iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		printf("WSAStartup failed with error: %d\n", iResult);
 		exit(1);
@@ -248,8 +248,8 @@ int main(int argc, char* argv[])
 		perror("ERROR opening socket");
 		exit(1);
 	}
-	int on = 1;
-	int status = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on));
+	int32_t on = 1;
+	int32_t status = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on));
 	if (sockfd < 0)
 	{
 		perror("ERROR opening socket");
@@ -334,8 +334,8 @@ void doprocessingThread(void* args)
 /**
 * Process Socket Packet C37.118-2011
 */
-void doprocessing(int sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header) {
-	int n;
+void doprocessing(int32_t sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header) {
+	int32_t n;
 	unsigned char* buffer;
 	buffer = (unsigned char*)malloc(SIZE_BUFFER * sizeof(char));
 	CMD_Frame* cmd = new CMD_Frame();
@@ -360,9 +360,9 @@ void doprocessing(int sock, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA
 }
 
 
-void select_cmd_action(int sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header) {
-	int n, i;
-	unsigned short size;
+void select_cmd_action(int32_t sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG_Frame* myconf2, DATA_Frame* my_data, HEADER_Frame* my_header) {
+	int32_t n, i;
+	uint16_t size;
 	unsigned char* buffer;
 	unsigned char* buffer2;
 	bool send_data_flag = false;
@@ -372,7 +372,7 @@ void select_cmd_action(int sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG
 	t_arg.sock = sock;
 	t_arg.my_data = my_data;
 	t_arg.send_data_flag = false;
-	long rc;
+	int32_t rc;
 
 #ifdef _WIN32
 #else
@@ -427,11 +427,11 @@ void select_cmd_action(int sock, CMD_Frame* cmd, CONFIG_1_Frame* myconf1, CONFIG
 
 void* tx_data(void* args) {
 
-	unsigned short size, n;
+	uint16_t size, n;
 	unsigned char* buffer;
 	struct threadarg* my_args = (struct threadarg*)(args);
-	int i = 0;
-	unsigned short rate = my_args->my_data->associate_current_config->DATA_RATE_get();
+	int32_t i = 0;
+	uint16_t rate = my_args->my_data->associate_current_config->DATA_RATE_get();
 
 	while (my_args->send_data_flag) {
 		my_args->my_data->SOC_set(1149577200 + i);

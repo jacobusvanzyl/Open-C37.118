@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Method Constructor
 * Init with name, idcode and format pre defined
 */
-PMU_Station::PMU_Station(string name,short idcode,bool FREQ_TYPE , bool ANALOG_TYPE, bool PHASOR_TYPE, bool COORD_TYPE){
+PMU_Station::PMU_Station(string name,int16_t idcode,bool FREQ_TYPE , bool ANALOG_TYPE, bool PHASOR_TYPE, bool COORD_TYPE){
     this->STN_set(name);  
     this->IDCODE_set(idcode);
     this->FORMAT_set(FREQ_TYPE,ANALOG_TYPE,PHASOR_TYPE,COORD_TYPE);
@@ -69,7 +69,7 @@ void PMU_Station::FORMAT_set(bool FREQ_TYPE , bool ANALOG_TYPE, bool PHASOR_TYPE
 *  Set FORMAT Field WORD for each PMU Unit from Configuration Frame
 *  Usualy used to receive a frame config from others PMU/PDC devices
 */
-void PMU_Station::FORMAT_set(unsigned short FORMAT_WORD){
+void PMU_Station::FORMAT_set(uint16_t FORMAT_WORD){
 	this->FORMAT = FORMAT_WORD;
 }
 
@@ -85,28 +85,28 @@ void PMU_Station::STN_set(string station_name){
 /**
 *  Set IDCODE Field to just ONE PMU Station
 */
-void PMU_Station::IDCODE_set(short code){
+void PMU_Station::IDCODE_set(int16_t code){
 	this->IDCODE = code;
 }
 
 /**
 *  Set PHASORS CHANNEL NUMBER Field to just ONE PMU Station
 */
-void PMU_Station::PHNMR_set(unsigned short number){
+void PMU_Station::PHNMR_set(uint16_t number){
 	this->PHNMR = number;
 }
 
 /**
 *  Set ANALOG CHANNEL NUMBER Field to just ONE PMU Station
 */
-void PMU_Station::ANNMR_set(unsigned short number){
+void PMU_Station::ANNMR_set(uint16_t number){
 	this->ANNMR = number;
 }
 
 /**
 *  Set DIGITAL CHANNEL NUMBER Field to just ONE PMU Station
 */
-void PMU_Station::DGNMR_set(unsigned short number){
+void PMU_Station::DGNMR_set(uint16_t number){
 	this->DGNMR = number;
 }
 
@@ -115,7 +115,7 @@ void PMU_Station::DGNMR_set(unsigned short number){
 *  Set PHASOR CHANNEL NAME, (TYPE|FACTOR) Field to just ONE PMU Station
 *  Using factor represented in 24 bits user defined
 */
-void PMU_Station::PHASOR_add(string name,unsigned long factor,unsigned int type){
+void PMU_Station::PHASOR_add(string name,uint32_t factor,uint32_t type){
 	name.append(16,' ');
 	this->CHNAM_Phasor.push_back(name.substr(0,16));
 	//cout << "Type:" << type << endl;
@@ -131,7 +131,7 @@ void PMU_Station::PHASOR_add(string name,unsigned long factor,unsigned int type)
 *  Set PHASOR CHANNEL NAME, (TYPE|FACTOR=1) Field to just ONE PMU Station
 *  Using factor=1 when represented in float number
 */
-void PMU_Station::PHASOR_add(string name,unsigned int type){
+void PMU_Station::PHASOR_add(string name,uint32_t type){
 	name.append(16,' ');
 	this->CHNAM_Phasor.push_back(name.substr(0,16));
 	this->PHUNIT.push_back((type << 24)| 0x01 );
@@ -144,7 +144,7 @@ void PMU_Station::PHASOR_add(string name,unsigned int type){
 *  Set ANALOG CHANNEL NAME, (TYPE|FACTOR) Field to just ONE PMU Station
 *  Using factor represented in 24 bits user defined
 */
-void PMU_Station::ANALOG_add(string name, long factor,unsigned int type){
+void PMU_Station::ANALOG_add(string name, int32_t factor,uint32_t type){
 	name.append(16,' ');
 	this->CHNAM_Analog.push_back(name.substr(0,16));
 	this->ANUNIT.push_back((type << 24) | (factor & 0x0FFFFFF) );
@@ -156,7 +156,7 @@ void PMU_Station::ANALOG_add(string name, long factor,unsigned int type){
 *  Set ANALOG CHANNEL NAME, (TYPE|FACTOR=1) Field to just ONE PMU Station
 *  Using factor=1 when represented in float number
 */
-void PMU_Station::ANALOG_add(string name, unsigned int type){
+void PMU_Station::ANALOG_add(string name, uint32_t type){
 	name.append(16,' ');
 	this->CHNAM_Analog.push_back(name.substr(0,16));
 	this->ANUNIT.push_back((type << 24) | 0x01 );
@@ -170,8 +170,8 @@ void PMU_Station::ANALOG_add(string name, unsigned int type){
 *  Set 16 x DIGITAL CHANNEL NAME, (NORMAL|VALID) Field to just ONE PMU Station
 *  NORMAL = MSB Bytes and VALID is LSB Bytes
 */
-void PMU_Station::DIGITAL_add(vector<string> name, unsigned short normal, unsigned short valid){
-	for(unsigned int i=0; i< name.size() ; i++){
+void PMU_Station::DIGITAL_add(vector<string> name, uint16_t normal, uint16_t valid){
+	for(uint32_t i=0; i< name.size() ; i++){
 		name[i].append(16,' ');
 		this->CHNAM_Digital.push_back(name[i].substr(0,16));
 	}
@@ -200,7 +200,7 @@ void PMU_Station::CFGCNT_inc(){
 /**
 *  Set CONFIG COUNTER Field to just ONE PMU Station
 */
-void PMU_Station::CFGCNT_set(unsigned short value){
+void PMU_Station::CFGCNT_set(uint16_t value){
 	this->CFGCNT = value;	
 }
 
@@ -209,7 +209,7 @@ void PMU_Station::CFGCNT_set(unsigned short value){
 *  Current PMU Station Status Field 
 *  Used in DATA FRAME too
 */
-void PMU_Station::STAT_set(unsigned short value){
+void PMU_Station::STAT_set(uint16_t value){
 	this->STAT = value;	
 }
 
@@ -217,7 +217,7 @@ void PMU_Station::STAT_set(unsigned short value){
 *  Set PHASOR VALUE IN PHASOR CHANNEL NUMBER = POS to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-void PMU_Station::PHASOR_VALUE_set(Complex value, unsigned int pos){
+void PMU_Station::PHASOR_VALUE_set(Complex value, uint32_t pos){
 	this->PHASOR_Values[pos] = value;
 }
 
@@ -225,7 +225,7 @@ void PMU_Station::PHASOR_VALUE_set(Complex value, unsigned int pos){
 *  Set ANALOG VALUE IN ANALOG CHANNEL NUMBER = POS to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-void PMU_Station::ANALOG_VALUE_set(float value, unsigned int pos){
+void PMU_Station::ANALOG_VALUE_set(float value, uint32_t pos){
 	this->ANALOG_Values[pos] = value;
 }
 
@@ -233,7 +233,7 @@ void PMU_Station::ANALOG_VALUE_set(float value, unsigned int pos){
 *  Set DIGITAL BIT VALUE, IN BIT = POS OF ONE DIGITAL CHANNEL to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-void PMU_Station::DIGITAL_VALUE_set(bool value, unsigned int channel, unsigned int pos){
+void PMU_Station::DIGITAL_VALUE_set(bool value, uint32_t channel, uint32_t pos){
 	this->DIGITAL_Values[channel][pos] = value;
 }
 
@@ -241,7 +241,7 @@ void PMU_Station::DIGITAL_VALUE_set(bool value, unsigned int channel, unsigned i
 *  Set DIGITAL WORD VALUE (16 bits), IN ONE DIGITAL CHANNEL to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-void PMU_Station::DIGITAL_VALUE_set(vector<bool> value, unsigned int channel){
+void PMU_Station::DIGITAL_VALUE_set(vector<bool> value, uint32_t channel){
 	this->DIGITAL_Values[channel]= value;
 }
 
@@ -271,14 +271,14 @@ string PMU_Station::STN_get(){
 /**
 *  Get IDCODE Field to just ONE PMU Station
 */
-unsigned short PMU_Station::IDCODE_get(){
+uint16_t PMU_Station::IDCODE_get(){
 	return(this->IDCODE);
 }
 
 /**
 *  Get FORMAT Field WORD to just ONE PMU Station
 */
-unsigned short PMU_Station::FORMAT_get(){
+uint16_t PMU_Station::FORMAT_get(){
 	return(this->FORMAT);
 }
 
@@ -319,7 +319,7 @@ bool PMU_Station::FORMAT_FREQ_TYPE_get(){
 *  0 = Normal
 *  1 = Problem
 */
-unsigned short PMU_Station::DGUNIT_NORMAL_get(unsigned int pos){
+uint16_t PMU_Station::DGUNIT_NORMAL_get(uint32_t pos){
 	return (this->DGUNIT[pos] >> 16);
 }
 
@@ -328,7 +328,7 @@ unsigned short PMU_Station::DGUNIT_NORMAL_get(unsigned int pos){
 *  0 = Invalid
 *  1 = Valid
 */
-unsigned short PMU_Station::DGUNIT_VALID_get(unsigned int pos){
+uint16_t PMU_Station::DGUNIT_VALID_get(uint32_t pos){
 	return (this->DGUNIT[pos] & 0x00FF);
 }
 
@@ -336,19 +336,19 @@ unsigned short PMU_Station::DGUNIT_VALID_get(unsigned int pos){
 *  Get Numbers of PHASORS
 */
 //Numbers of phasors, analog and digital channels
-unsigned short PMU_Station::PHNMR_get(){
+uint16_t PMU_Station::PHNMR_get(){
 	 return (this->PHNMR);
 }
 /**
 *  Get Numbers of ANALOGS
 */
-unsigned short PMU_Station::ANNMR_get(){
+uint16_t PMU_Station::ANNMR_get(){
 	return (this->ANNMR);
 }
 /**
 *  Get Numbers of DIGITAL
 */
-unsigned short PMU_Station::DGNMR_get(){
+uint16_t PMU_Station::DGNMR_get(){
 	return (this->DGNMR);
 }
 
@@ -356,38 +356,38 @@ unsigned short PMU_Station::DGNMR_get(){
 /**
 *  Get Name of PHASORS Channel Input
 */
-string PMU_Station::PH_NAME_get(unsigned int pos){
+string PMU_Station::PH_NAME_get(uint32_t pos){
 	return (this->CHNAM_Phasor[pos]);
 }
 /**
 *  Get Name of ANALOGS Channel Input
 */
-string PMU_Station::AN_NAME_get(unsigned int pos){
+string PMU_Station::AN_NAME_get(uint32_t pos){
 	return (this->CHNAM_Analog[pos]);
 }
 /**
 *  Get Name of DIGITAL Channel Input
 */
-string PMU_Station::DG_NAME_get(unsigned int pos){
+string PMU_Station::DG_NAME_get(uint32_t pos){
 	return (this->CHNAM_Digital[pos]);
 }
 //UNIT
 /**
 *  Get UNIT of PHASORS Channel Input
 */
-unsigned long PMU_Station::PHUNIT_get(unsigned int pos){
+uint32_t PMU_Station::PHUNIT_get(uint32_t pos){
 	return (this->PHUNIT[pos]);
 }
 /**
 *  Get UNIT of ANALOGS Channel Input
 */
-unsigned long PMU_Station::ANUNIT_get(unsigned int pos){
+uint32_t PMU_Station::ANUNIT_get(uint32_t pos){
 	return (this->ANUNIT[pos]);
 }
 /**
 *  Get UNIT of DIGITAL Channel Input
 */
-unsigned long PMU_Station::DGUNIT_get(unsigned int pos){
+uint32_t PMU_Station::DGUNIT_get(uint32_t pos){
 	return (this->DGUNIT[pos]);
 }
 
@@ -395,13 +395,13 @@ unsigned long PMU_Station::DGUNIT_get(unsigned int pos){
 /**
 *  Get FACTOR of PHASORS Channel Input
 */
-unsigned long PMU_Station::PHFACTOR_get(unsigned int pos){
+uint32_t PMU_Station::PHFACTOR_get(uint32_t pos){
 	return ((this->PHUNIT[pos] & 0x0FFFFFF));
 }
 /**
 *  Get FACTOR of ANALOGS Channel Input
 */
-unsigned long PMU_Station::ANFACTOR_get(unsigned int pos){
+uint32_t PMU_Station::ANFACTOR_get(uint32_t pos){
 	return ((this->ANUNIT[pos]& 0x0FFFFFF));
 }
 
@@ -418,7 +418,7 @@ bool PMU_Station::FNOM_get(){
 *  Get CONFIG COUNTER Field to just ONE PMU Station
 *  Indicate how many times the configuration device has changed
 */
-unsigned short PMU_Station::CFGCNT_get(){
+uint16_t PMU_Station::CFGCNT_get(){
 	return (this->CFGCNT);
 }
 
@@ -429,7 +429,7 @@ unsigned short PMU_Station::CFGCNT_get(){
 *  Indicate the current status of current PMU Station
 *  Used in DATA FRAME too
 */
-unsigned short PMU_Station::STAT_get(){
+uint16_t PMU_Station::STAT_get(){
 	return (this->STAT);
 }
 
@@ -438,7 +438,7 @@ unsigned short PMU_Station::STAT_get(){
 *  Get PHASOR VALUE IN PHASOR CHANNEL NUMBER = POS to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-Complex PMU_Station::PHASOR_VALUE_get(unsigned int pos){
+Complex PMU_Station::PHASOR_VALUE_get(uint32_t pos){
 	return (this->PHASOR_Values[pos]);
 }
 
@@ -446,21 +446,21 @@ Complex PMU_Station::PHASOR_VALUE_get(unsigned int pos){
 *  Get ANALOG VALUE IN ANALOG CHANNEL NUMBER = POS to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-float PMU_Station::ANALOG_VALUE_get(unsigned int pos){
+float PMU_Station::ANALOG_VALUE_get(uint32_t pos){
 	return(this->ANALOG_Values[pos]);
 }
 /**
 *  Get DIGITAL BIT VALUE, IN BIT = POS OF ONE DIGITAL CHANNEL to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-bool PMU_Station::DIGITAL_VALUE_get(unsigned int channel, unsigned int pos){
+bool PMU_Station::DIGITAL_VALUE_get(uint32_t channel, uint32_t pos){
 	return(this->DIGITAL_Values[channel][pos]);
 }
 /**
 *  Get DIGITAL WORD VALUE (16 bits), IN ONE DIGITAL CHANNEL to just ONE PMU Station
 *  Used in DATA FRAME too
 */
-vector<bool> PMU_Station::DIGITAL_VALUE_get(unsigned int channel){
+vector<bool> PMU_Station::DIGITAL_VALUE_get(uint32_t channel){
 	return(this->DIGITAL_Values[channel]);
 }
 

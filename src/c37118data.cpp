@@ -33,7 +33,7 @@ DATA_Frame::DATA_Frame(CONFIG_Frame *cfg){
 /**
 * Method pack_data_buffer
 * Mount a new data frame based on values store in the the class,
-* special short and long pointers are needs to populate the buffer.
+* special int16_t and int32_t pointers are needs to populate the buffer.
 * total frame size is different because the UNIT and Quantity of Channels are
 * variable. All considered.
 */
@@ -43,12 +43,12 @@ typedef union _data {
   char  s[4];
 } myData;
 
-unsigned short DATA_Frame::pack(unsigned char **buff){
+uint16_t DATA_Frame::pack(unsigned char **buff){
 	myData aux_conv;
 
-	unsigned short size = 14;
+	uint16_t size = 14;
 	// compute channel numbers foreach exists pmu
-	for(int i =0; i<this->associate_current_config->NUM_PMU_get();i++){
+	for(int32_t i =0; i<this->associate_current_config->NUM_PMU_get();i++){
 
 		//STAT
 		size +=2;
@@ -98,8 +98,8 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 
 	//pointers to buffer
 	unsigned char *aux_buff;
-	unsigned short *shptr;
-	unsigned long *lptr;
+	uint16_t *shptr;
+	uint32_t *lptr;
 	unsigned char *fptr;
 	
 	//buff size reserved
@@ -109,34 +109,34 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 	//copy buff memory address
 	aux_buff = *buff;
 	
-	//create a short and long pointers, and increment by byte_size(2,4...)
-	shptr=(unsigned short *) (aux_buff);
+	//create a int16_t and int32_t pointers, and increment by byte_size(2,4...)
+	shptr=(uint16_t *) (aux_buff);
 	*shptr = htons(this->SYNC_get()); aux_buff +=2;
 	
-	shptr=(unsigned short *) (aux_buff);
+	shptr=(uint16_t *) (aux_buff);
 	*shptr = htons(this->FRAMESIZE_get()); aux_buff +=2;
 	
-	shptr=(unsigned short *) (aux_buff);
+	shptr=(uint16_t *) (aux_buff);
 	*shptr = htons(this->IDCODE_get()); aux_buff +=2;
 	
-	lptr=(unsigned long *) (aux_buff);
+	lptr=(uint32_t *) (aux_buff);
 	*lptr = htonl(this->SOC_get()); aux_buff +=4;
 	
-	lptr=(unsigned long *) (aux_buff);
+	lptr=(uint32_t *) (aux_buff);
 	*lptr = htonl(this->FRACSEC_get()); aux_buff +=4;
 
 	// For each pmu station
-	for(int i = 0; i< this->associate_current_config->NUM_PMU_get() ; i++){
+	for(int32_t i = 0; i< this->associate_current_config->NUM_PMU_get() ; i++){
 		
 		//Get Status Value
-		shptr=(unsigned short *) (aux_buff);	
+		shptr=(uint16_t *) (aux_buff);	
 		*shptr = htons(this->associate_current_config->pmu_station_list[i]->STAT_get());
 		aux_buff +=2;
 		
 		//Channels Value
 		
 		//Foreach Phasors
-		for(int j = 0; j< this->associate_current_config->pmu_station_list[i]->PHNMR_get(); j++){
+		for(int32_t j = 0; j< this->associate_current_config->pmu_station_list[i]->PHNMR_get(); j++){
 			// Data mode = float
 			if(this->associate_current_config->pmu_station_list[i]->FORMAT_PHASOR_TYPE_get()){
 				// Coord Polar
@@ -195,29 +195,29 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 			else{
 				// Coord Polar
 				if (this->associate_current_config->pmu_station_list[i]->FORMAT_COORD_get()){
-					shptr=(unsigned short *) (aux_buff);
+					shptr=(uint16_t *) (aux_buff);
 					float aux = abs(this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j));
-					unsigned short aux2 = (unsigned short) (aux*1E5/this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
+					uint16_t aux2 = (uint16_t) (aux*1E5/this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
 					*shptr = htons(aux2); 
 					aux_buff +=2;
 					
-					shptr=(unsigned short *) (aux_buff);
+					shptr=(uint16_t *) (aux_buff);
 					aux = arg(this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j));
-					 aux2 = (unsigned short) (aux*1E4);
+					 aux2 = (uint16_t) (aux*1E4);
 					*shptr = htons(aux2); 
 					aux_buff +=2;
 				}
 				// Coord Recta
 				else{
-					shptr=(unsigned short *) (aux_buff);
+					shptr=(uint16_t *) (aux_buff);
 					float aux = this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j).real();
-					unsigned short aux2 = (unsigned short) (aux*1E5/this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
+					uint16_t aux2 = (uint16_t) (aux*1E5/this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
 					*shptr = htons(aux2); 
 					aux_buff +=2;
 					
-					shptr=(unsigned short *) (aux_buff);
+					shptr=(uint16_t *) (aux_buff);
 					aux = this->associate_current_config->pmu_station_list[i]->PHASOR_VALUE_get(j).imag();
-					 aux2 = (unsigned short) (aux*1E5/this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
+					 aux2 = (uint16_t) (aux*1E5/this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
 					*shptr = htons(aux2); 
 					aux_buff +=2;
 				}
@@ -254,27 +254,27 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 		
 		// Data mode = Integer 16 bits
 		else{
-			shptr=(unsigned short *) (aux_buff);
+			shptr=(uint16_t *) (aux_buff);
 			float aux = this->associate_current_config->pmu_station_list[i]->FREQ_get();
 			if(this->associate_current_config->pmu_station_list[i]->FNOM_get())
 				aux-=50.0;
 			else
 				aux-=60.0;
 				
-			unsigned short aux2 = (unsigned short) (aux*1000);
+			uint16_t aux2 = (uint16_t) (aux*1000);
 			*shptr = htons(aux2); 
 			aux_buff +=2;
 			
 			//Scale *100
-			shptr=(unsigned short *) (aux_buff);
+			shptr=(uint16_t *) (aux_buff);
 			aux = this->associate_current_config->pmu_station_list[i]->DFREQ_get();
-			aux2 = (unsigned short) (aux*100);
+			aux2 = (uint16_t) (aux*100);
 			*shptr = htons(aux2); 
 			aux_buff +=2;
 		}
 			
 		//Foreach ANALOGS
-		for(int j = 0; j< this->associate_current_config->pmu_station_list[i]->ANNMR_get(); j++){
+		for(int32_t j = 0; j< this->associate_current_config->pmu_station_list[i]->ANNMR_get(); j++){
 			// Data mode = float
 			if(this->associate_current_config->pmu_station_list[i]->FORMAT_ANALOG_TYPE_get()){
 				aux_conv.f = this->associate_current_config->pmu_station_list[i]->ANALOG_VALUE_get(j);
@@ -290,9 +290,9 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 			}
 			// Data mode = Integer 16 bits
 			else{
-				shptr=(unsigned short *) (aux_buff);
+				shptr=(uint16_t *) (aux_buff);
 				float aux = this->associate_current_config->pmu_station_list[i]->ANALOG_VALUE_get(j);
-				unsigned short aux2 = (unsigned short)(aux); //this->associate_current_config->pmu_station_list[i]->ANFACTOR_get(j));
+				uint16_t aux2 = (uint16_t)(aux); //this->associate_current_config->pmu_station_list[i]->ANFACTOR_get(j));
 				*shptr = htons(aux2); 
 				aux_buff +=2;
 	
@@ -300,24 +300,24 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 		}// end analog
 		
 		//Foreach DIGITAL
-		for(int j = 0; j< this->associate_current_config->pmu_station_list[i]->DGNMR_get(); j++){
-			shptr=(unsigned short *) (aux_buff);
-			unsigned short aux = 0;
-			for(int k = 0; k < 16 ; k++){	
+		for(int32_t j = 0; j< this->associate_current_config->pmu_station_list[i]->DGNMR_get(); j++){
+			shptr=(uint16_t *) (aux_buff);
+			uint16_t aux = 0;
+			for(int32_t k = 0; k < 16 ; k++){	
 				aux |= (this->associate_current_config->pmu_station_list[i]->DIGITAL_VALUE_get(j,k) << k);
 			
 			}
-			shptr=(unsigned short *) (aux_buff);
+			shptr=(uint16_t *) (aux_buff);
 			*shptr = htons(aux); 
 			aux_buff +=2;
 		}
 	}//foreach PMU STATION
 	
 	// Compute CRC from current frame
-	unsigned short crc_aux = Calc_CRC(*buff,this->FRAMESIZE_get()-2);
+	uint16_t crc_aux = Calc_CRC(*buff,this->FRAMESIZE_get()-2);
 	this->CHK_set(crc_aux);
 	// get computed CRC 
-	shptr=(unsigned short *) (aux_buff);
+	shptr=(uint16_t *) (aux_buff);
 	*shptr = htons(this->CHK_get());
 	
 	// return # of bytes writed
@@ -333,27 +333,27 @@ unsigned short DATA_Frame::pack(unsigned char **buff){
 void DATA_Frame::unpack(unsigned char *buffer){
     	unsigned char *aux_buffer ;
     	myData aux_conv1,aux_conv2;
-    	unsigned short aux1, aux2;
+    	uint16_t aux1, aux2;
     	aux_buffer = buffer;
-	this->SYNC_set(ntohs(*((unsigned short*)(aux_buffer))));
+	this->SYNC_set(ntohs(*((uint16_t*)(aux_buffer))));
 	aux_buffer +=2;
-	this->FRAMESIZE_set(ntohs(*((unsigned short*)(aux_buffer))));
+	this->FRAMESIZE_set(ntohs(*((uint16_t*)(aux_buffer))));
 	aux_buffer +=2;
-	this->IDCODE_set(ntohs(*((unsigned short*)(aux_buffer))));
+	this->IDCODE_set(ntohs(*((uint16_t*)(aux_buffer))));
 	aux_buffer +=2;
-	this->SOC_set(ntohl(*((unsigned long*)(aux_buffer))));
+	this->SOC_set(ntohl(*((uint32_t*)(aux_buffer))));
 	aux_buffer +=4;
-	this->FRACSEC_set(ntohl(*((unsigned long*)(aux_buffer))));
+	this->FRACSEC_set(ntohl(*((uint32_t*)(aux_buffer))));
 	aux_buffer +=4;
     	
 	// For each pmu station
-	for(int i = 0; i< this->associate_current_config->NUM_PMU_get() ; i++){
+	for(int32_t i = 0; i< this->associate_current_config->NUM_PMU_get() ; i++){
 	
 	//Get Status Value
-	this->associate_current_config->pmu_station_list[i]->STAT_set(ntohs(*((unsigned short*)(aux_buffer))));
+	this->associate_current_config->pmu_station_list[i]->STAT_set(ntohs(*((uint16_t*)(aux_buffer))));
 	aux_buffer +=2;	
 		//Foreach Phasors
-		for(int j = 0; j< this->associate_current_config->pmu_station_list[i]->PHNMR_get(); j++){
+		for(int32_t j = 0; j< this->associate_current_config->pmu_station_list[i]->PHNMR_get(); j++){
 			// Data mode = float
 			if(this->associate_current_config->pmu_station_list[i]->FORMAT_PHASOR_TYPE_get()){
 				//Float Converter Struct
@@ -389,11 +389,11 @@ void DATA_Frame::unpack(unsigned char *buffer){
 			}
 			// Data mode = Integer 16 bits
 			else{
-				aux1 = ntohs(*((unsigned short*)(aux_buffer)));
+				aux1 = ntohs(*((uint16_t*)(aux_buffer)));
 				aux_buffer +=2;
-				aux2 = ntohs(*((unsigned short*)(aux_buffer)));
+				aux2 = ntohs(*((uint16_t*)(aux_buffer)));
 				aux_buffer +=2;
-				unsigned long aux, aux_b ;			
+				uint32_t aux, aux_b ;			
 				// Coord Polar
 				if (this->associate_current_config->pmu_station_list[i]->FORMAT_COORD_get()){
 					aux = (aux1*this->associate_current_config->pmu_station_list[i]->PHFACTOR_get(j));
@@ -439,9 +439,9 @@ void DATA_Frame::unpack(unsigned char *buffer){
 		// Data mode = Integer 16 bits
 		else{
 			
-			aux1 = ntohs(*((unsigned short*)(aux_buffer)));
+			aux1 = ntohs(*((uint16_t*)(aux_buffer)));
 			aux_buffer +=2;
-			aux2 = ntohs(*((unsigned short*)(aux_buffer)));
+			aux2 = ntohs(*((uint16_t*)(aux_buffer)));
 			aux_buffer +=2;
 
 			if(this->associate_current_config->pmu_station_list[i]->FNOM_get())
@@ -454,7 +454,7 @@ void DATA_Frame::unpack(unsigned char *buffer){
 		}
 			
 		//Foreach ANALOGS
-		for(int j = 0; j< this->associate_current_config->pmu_station_list[i]->ANNMR_get(); j++){
+		for(int32_t j = 0; j< this->associate_current_config->pmu_station_list[i]->ANNMR_get(); j++){
 			// Data mode = float
 			if(this->associate_current_config->pmu_station_list[i]->FORMAT_ANALOG_TYPE_get()){
 				aux_conv1.s[3] = (*((unsigned char *)(aux_buffer)));
@@ -472,18 +472,18 @@ void DATA_Frame::unpack(unsigned char *buffer){
 			}
 			// Data mode = Integer 16 bits
 			else{
-				aux1 = ntohs(*((unsigned short*)(aux_buffer)));
+				aux1 = ntohs(*((uint16_t*)(aux_buffer)));
 				aux_buffer +=2;
 				this->associate_current_config->pmu_station_list[i]->ANALOG_VALUE_set(aux1,j);
 			}// end data mode
 		}// end analog
 		
 		//Foreach DIGITAL
-		for(int j = 0; j< this->associate_current_config->pmu_station_list[i]->DGNMR_get(); j++){
-			aux1 = ntohs(*((unsigned short*)(aux_buffer)));
+		for(int32_t j = 0; j< this->associate_current_config->pmu_station_list[i]->DGNMR_get(); j++){
+			aux1 = ntohs(*((uint16_t*)(aux_buffer)));
 			aux_buffer +=2;
 			//cout<<"AUX: "<<aux1<<endl;
-			for(int k = 0; k < 16 ; k++){	
+			for(int32_t k = 0; k < 16 ; k++){	
 				if(((aux1>>k)&0x0001) == true){
 					this->associate_current_config->pmu_station_list[i]->DIGITAL_VALUE_set(true,j,k);
 				}else{
@@ -497,7 +497,7 @@ void DATA_Frame::unpack(unsigned char *buffer){
 	}// foreach PMU STATION
 	
 	// CRC (PREVIOUS COMPUTED in PACK/UNPACK Methods)		
-	this->CHK_set(ntohs(*(unsigned short *)(aux_buffer)));
+	this->CHK_set(ntohs(*(uint16_t *)(aux_buffer)));
 }
 
 

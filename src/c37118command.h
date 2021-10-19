@@ -34,26 +34,26 @@ class CMD_Frame : public C37118{
 	/**
 	* SET Methods
 	*/
-	void CMD_set(unsigned short value);
+	void CMD_set(uint16_t value);
 	void EXTRAFRAME_set(unsigned char *value);
 
 	/**
 	* GET Methods
 	*/
-	unsigned short CMD_get();
+	uint16_t CMD_get();
 	unsigned char *EXTRAFRAME_get();
 	
 	/**
 	* PACK/UNPACK Methods
 	*/
-	unsigned short pack(unsigned char **buffer);
+	uint16_t pack(unsigned char **buffer);
 	void unpack(unsigned char *buffer);
 	
 	/**
 	* DATA STORE
 	*/	
 	protected:
-	unsigned short CMD;
+	uint16_t CMD;
 	unsigned char *EXTRAFRAME;	
 };
 #endif

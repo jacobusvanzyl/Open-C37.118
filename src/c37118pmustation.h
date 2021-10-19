@@ -28,39 +28,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class PMU_Station : public C37118{
 
 	public: 
-	PMU_Station(string name,short idcode,bool FREQ_TYPE , bool ANALOG_TYPE, bool PHASOR_TYPE, bool COORD_TYPE);	
+	PMU_Station(string name,int16_t idcode,bool FREQ_TYPE , bool ANALOG_TYPE, bool PHASOR_TYPE, bool COORD_TYPE);	
 	PMU_Station();	
 		
 	/**
 	* SET Methods
 	*/
 	void STN_set(string station_name);
-	void IDCODE_set(short code);
+	void IDCODE_set(int16_t code);
 	void FORMAT_set(bool FREQ_TYPE , bool ANALOG_TYPE, bool PHASOR_TYPE, bool COORD_TYPE );
-	void FORMAT_set(unsigned short FORMAT_WORD);
+	void FORMAT_set(uint16_t FORMAT_WORD);
 	
-	void PHNMR_set(unsigned short number);
-	void ANNMR_set(unsigned short number);
-	void DGNMR_set(unsigned short number);
+	void PHNMR_set(uint16_t number);
+	void ANNMR_set(uint16_t number);
+	void DGNMR_set(uint16_t number);
 	
-	void PHASOR_add(string name,unsigned long factor,unsigned int type);
-	void PHASOR_add(string name,unsigned int type);
-	void PHASOR_VALUE_set(Complex value, unsigned int pos);
+	void PHASOR_add(string name,uint32_t factor,uint32_t type);
+	void PHASOR_add(string name,uint32_t type);
+	void PHASOR_VALUE_set(Complex value, uint32_t pos);
 	
 	
-	void ANALOG_add(string name, long factor,unsigned int type);
-	void ANALOG_add(string name, unsigned int type);
-	void ANALOG_VALUE_set(float value, unsigned int pos);
+	void ANALOG_add(string name, int32_t factor,uint32_t type);
+	void ANALOG_add(string name, uint32_t type);
+	void ANALOG_VALUE_set(float value, uint32_t pos);
 
-	void DIGITAL_add(vector<string> name, unsigned short normal, unsigned short valid);
-	void DIGITAL_VALUE_set(bool value, unsigned int channel, unsigned int pos);
-	void DIGITAL_VALUE_set(vector<bool> value, unsigned int channel);
+	void DIGITAL_add(vector<string> name, uint16_t normal, uint16_t valid);
+	void DIGITAL_VALUE_set(bool value, uint32_t channel, uint32_t pos);
+	void DIGITAL_VALUE_set(vector<bool> value, uint32_t channel);
 	
 	void FNOM_set(bool Freq_Nom);
 
 	void CFGCNT_inc();
-	void CFGCNT_set(unsigned short value);
-	void STAT_set(unsigned short value);
+	void CFGCNT_set(uint16_t value);
+	void STAT_set(uint16_t value);
 	
 	void FREQ_set(float value);
 	void DFREQ_set(float value);
@@ -69,40 +69,40 @@ class PMU_Station : public C37118{
 	* GET Methods
 	*/
 	string STN_get();
-	unsigned short IDCODE_get();
+	uint16_t IDCODE_get();
 	bool FORMAT_COORD_get();
 	bool FORMAT_PHASOR_TYPE_get();
 	bool FORMAT_ANALOG_TYPE_get();
 	bool FORMAT_FREQ_TYPE_get();
-	unsigned short FORMAT_get();	
-	unsigned short DGUNIT_NORMAL_get(unsigned int pos);
-	unsigned short DGUNIT_VALID_get(unsigned int pos);
+	uint16_t FORMAT_get();	
+	uint16_t DGUNIT_NORMAL_get(uint32_t pos);
+	uint16_t DGUNIT_VALID_get(uint32_t pos);
 	
 	//Numbers of phasors, analog and digital channels
-	unsigned short PHNMR_get();
-	unsigned short ANNMR_get();
-	unsigned short DGNMR_get();
+	uint16_t PHNMR_get();
+	uint16_t ANNMR_get();
+	uint16_t DGNMR_get();
 	
-	Complex PHASOR_VALUE_get(unsigned int pos);
-	float ANALOG_VALUE_get(unsigned int pos);
-	bool DIGITAL_VALUE_get(unsigned int channel, unsigned int pos);
-	vector<bool> DIGITAL_VALUE_get(unsigned int channel);
+	Complex PHASOR_VALUE_get(uint32_t pos);
+	float ANALOG_VALUE_get(uint32_t pos);
+	bool DIGITAL_VALUE_get(uint32_t channel, uint32_t pos);
+	vector<bool> DIGITAL_VALUE_get(uint32_t channel);
 	
 	bool FNOM_get();
 	
-	unsigned short CFGCNT_get();
-	unsigned short STAT_get();
+	uint16_t CFGCNT_get();
+	uint16_t STAT_get();
 	
-	string PH_NAME_get(unsigned int pos);
-	string AN_NAME_get(unsigned int pos);
-	string DG_NAME_get(unsigned int pos);
+	string PH_NAME_get(uint32_t pos);
+	string AN_NAME_get(uint32_t pos);
+	string DG_NAME_get(uint32_t pos);
 	
-	unsigned long PHUNIT_get(unsigned int pos);
-	unsigned long ANUNIT_get(unsigned int pos);
-	unsigned long DGUNIT_get(unsigned int pos);
+	uint32_t PHUNIT_get(uint32_t pos);
+	uint32_t ANUNIT_get(uint32_t pos);
+	uint32_t DGUNIT_get(uint32_t pos);
 	
-	unsigned long PHFACTOR_get(unsigned int pos);
-	unsigned long ANFACTOR_get(unsigned int pos);
+	uint32_t PHFACTOR_get(uint32_t pos);
+	uint32_t ANFACTOR_get(uint32_t pos);
 
 	
 	float FREQ_get();
@@ -114,11 +114,11 @@ class PMU_Station : public C37118{
 	protected:
 		//STATION NAME
 		string STN;
-		unsigned short IDCODE;
-		unsigned short FORMAT;
-		unsigned short PHNMR;
-		unsigned short ANNMR;
-		unsigned short DGNMR;
+		uint16_t IDCODE;
+		uint16_t FORMAT;
+		uint16_t PHNMR;
+		uint16_t ANNMR;
+		uint16_t DGNMR;
 		
 		//CHANNEL NAMES
 		vector<string> CHNAM_Phasor;
@@ -131,13 +131,13 @@ class PMU_Station : public C37118{
 		vector< vector<bool> > DIGITAL_Values;
 
 		//CHANNEL UNIT
-		vector<unsigned long> PHUNIT; 
-		vector<unsigned long> ANUNIT;
-		vector<unsigned long> DGUNIT;
+		vector<uint32_t> PHUNIT; 
+		vector<uint32_t> ANUNIT;
+		vector<uint32_t> DGUNIT;
 	
-		unsigned short FNOM;
-		unsigned short CFGCNT;
-		unsigned short STAT;
+		uint16_t FNOM;
+		uint16_t CFGCNT;
+		uint16_t STAT;
 	
 		float FREQ;
 		float DFREQ;
