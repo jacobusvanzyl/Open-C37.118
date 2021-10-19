@@ -65,6 +65,8 @@ public:
 	void FREQ_set(float value);
 	void DFREQ_set(float value);
 
+	void PHFACTOR_set(uint32_t pos, uint32_t factor);
+
 	/**
 	* GET Methods
 	*/

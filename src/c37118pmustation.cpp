@@ -43,13 +43,13 @@ PMU_Station::PMU_Station() {
 	this->ANNMR = 0;
 	this->DGNMR = 0;
 
-	this->CFGCNT = 0;;
-	this->IDCODE = 0;;
-	this->FORMAT = 0;;
-	this->FNOM = 0;;
-	this->STAT = 0;;
-	this->FREQ = 0;;
-	this->DFREQ = 0;;
+	this->CFGCNT = 0;
+	this->IDCODE = 0;
+	this->FORMAT = 0;
+	this->FNOM = 0;
+	this->STAT = 0;
+	this->FREQ = 0;
+	this->DFREQ = 0;
 }
 
 
@@ -113,7 +113,7 @@ void PMU_Station::DGNMR_set(uint16_t number) {
 
 /**
 *  Set PHASOR CHANNEL NAME, (TYPE|FACTOR) Field to just ONE PMU Station
-*  Using factor represented in 24 bits user defined
+*  Using factor represented in 24 bits user defined. Factor is the scaling factor * 1E5
 */
 void PMU_Station::PHASOR_add(string name, uint32_t factor, uint32_t type) {
 	name.append(16, ' ');
@@ -398,6 +398,13 @@ uint32_t PMU_Station::DGUNIT_get(uint32_t pos) {
 uint32_t PMU_Station::PHFACTOR_get(uint32_t pos) {
 	return ((this->PHUNIT[pos] & 0x0FFFFFF));
 }
+/**
+*  Set FACTOR of PHASORS Channel Input
+*/
+void PMU_Station::PHFACTOR_set(uint32_t pos, uint32_t factor) {
+	this->PHUNIT[pos] = this->PHUNIT[pos] & 0xF000000 | factor & 0x0FFFFFF;
+}
+
 /**
 *  Get FACTOR of ANALOGS Channel Input
 */
